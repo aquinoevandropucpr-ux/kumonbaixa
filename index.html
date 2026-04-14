@@ -100,6 +100,8 @@
 .calc-actions{display:flex;gap:8px;margin-top:14px}
 .btn-calc-cancel{flex:1;padding:10px;background:#f5f7fc;color:var(--kb-muted);border:0.5px solid var(--kb-border);border-radius:var(--kb-radius-sm);font-size:13px;cursor:pointer}
 .btn-calc-apply{flex:1;padding:10px;background:#003087;color:#fff;border:none;border-radius:var(--kb-radius-sm);font-size:13px;font-weight:600;cursor:pointer}
+    .metric-success{border-top:3px solid #2d5a2d}
+.metric-value.success{color:#2d5a2d}
   </style>
 </head>
 <body>
@@ -339,6 +341,9 @@ function renderHome(){
   const emCanc=todos.filter(c=>c.status==='Em Cancelamento').length;
   const cancelados=todos.filter(c=>c.status==='Cancelado').length;
   const alertas=todos.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
+  const revertidos=f.filter(c=>c.status==='Ativo').length;
+const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
+const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
   const multas=todos.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
   let f=todos;
   if(S.filtro==='Ativo')f=f.filter(c=>c.status==='Ativo');
@@ -354,6 +359,8 @@ function renderHome(){
       <div class="metric metric-warn"><div class="metric-label">Alertas +5 dias</div><div class="metric-value alerta">${alertas}</div></div>
       <div class="metric"><div class="metric-label">Cancelados</div><div class="metric-value">${cancelados}</div></div>
       <div class="metric"><div class="metric-label">Multas (R$)</div><div class="metric-value" style="font-size:16px;margin-top:4px">${multas.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>
+      <div class="metric metric-success"><div class="metric-label">Revertidos</div><div class="metric-value success">${revertidos}</div></div>
+    <div class="metric metric-success"><div class="metric-label">Taxa de reversão</div><div class="metric-value success" style="font-size:18px;margin-top:4px">${taxaReversao}%</div></div>
     </div>
     <div class="section-title">Filtros</div>
     <div class="filter-row">
