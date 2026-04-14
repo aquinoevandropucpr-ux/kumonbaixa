@@ -29,7 +29,7 @@
     .nav-btn.active .nav-bar{opacity:1}
     .content{flex:1;overflow-y:auto;padding:16px;background:var(--kb-surface);-webkit-overflow-scrolling:touch}
     .badge-status{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600}
-    .st-ativo{background:#e8eef8;color:#003087}
+    .st-revertido{background:#e8eef8;color:#003087}
     .st-cancelamento{background:#fff3cd;color:#7a5800}
     .st-cancelado{background:#e8f0e8;color:#2d5a2d}
     .st-alerta{background:#fde8e8;color:#8b1a1a}
@@ -193,7 +193,7 @@
       <div class="field"><label>Status inicial</label>
         <div class="status-select-row">
           <div class="status-opt selected" onclick="selStatus(this,'Em Cancelamento')">Em cancelamento</div>
-          <div class="status-opt" onclick="selStatus(this,'Ativo')">Ativo</div>
+          <div class="status-opt" onclick="selStatus(this,'Ativo')">Revertido</div>
           <div class="status-opt" onclick="selStatus(this,'Cancelado')">Cancelado</div>
         </div>
       </div>
@@ -255,7 +255,7 @@
       <div class="field"><label>Status</label>
         <div class="status-select-row" id="edit-status-row">
           <div class="status-opt" onclick="selStatusEdit(this,'Em Cancelamento')">Em cancelamento</div>
-          <div class="status-opt" onclick="selStatusEdit(this,'Ativo')">Ativo</div>
+          <div class="status-opt" onclick="selStatusEdit(this,'Ativo')">Revertido</div>
           <div class="status-opt" onclick="selStatusEdit(this,'Cancelado')">Cancelado</div>
         </div>
       </div>
@@ -358,7 +358,7 @@ function renderHome(){
     <div class="section-title">Filtros</div>
     <div class="filter-row">
       <div class="filter-chip${S.filtro==='todos'?' active':''}" onclick="setFiltro('todos')">Todos</div>
-      <div class="filter-chip${S.filtro==='Ativo'?' active':''}" onclick="setFiltro('Ativo')">Ativos</div>
+      <div class="filter-chip${S.filtro==='Ativo'?' active':''}" onclick="setFiltro('Ativo')">Revertidos</div>
       <div class="filter-chip${S.filtro==='Em Cancelamento'?' active':''}" onclick="setFiltro('Em Cancelamento')">Em cancelamento</div>
       <div class="filter-chip${S.filtro==='Cancelado'?' active':''}" onclick="setFiltro('Cancelado')">Cancelados</div>
     </div>
@@ -367,7 +367,7 @@ function renderHome(){
   if(f.length===0){html+='<div class="empty">Nenhum contrato encontrado.</div>';}
   else f.forEach(c=>{
     const al=c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento';
-    const bc=al?'st-alerta':(c.status==='Ativo'?'st-ativo':c.status==='Em Cancelamento'?'st-cancelamento':'st-cancelado');
+    const bc=al?'st-alerta':(c.status==='Ativo'?'st-revertido':c.status==='Em Cancelamento'?'st-cancelamento':'st-cancelado');
     html+=`<div class="card${al?' card-alerta':''}" onclick="verDetalhe('${c.id}')">
       <div class="card-name">${c.nome_aluno||'—'}</div>
       <div class="card-sub">${c.nome_responsavel||'—'} &middot; ${c.disciplinas||'—'}</div>
@@ -419,7 +419,7 @@ function verDetalhe(id){
     <div class="detail-card">
       <div class="section-title">Atualizar status</div>
       <div class="status-select-row" id="det-status-row">
-        <div class="status-opt${c.status==='Ativo'?' selected':''}" onclick="atualizarStatus('${c.id}',this,'Ativo')">Ativo</div>
+        <div class="status-opt${c.status==='Ativo'?' selected':''}" onclick="atualizarStatus('${c.id}',this,'Ativo')">Revertido</div>
         <div class="status-opt${c.status==='Em Cancelamento'?' selected':''}" onclick="atualizarStatus('${c.id}',this,'Em Cancelamento')">Em cancelamento</div>
         <div class="status-opt${c.status==='Cancelado'?' selected':''}" onclick="atualizarStatus('${c.id}',this,'Cancelado')">Cancelado</div>
       </div>
