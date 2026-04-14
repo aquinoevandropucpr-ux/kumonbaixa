@@ -460,7 +460,7 @@ function abrirEdicao(id){
   document.getElementById('e-aluno').value=c.nome_aluno||'';
   document.getElementById('e-multa').value=c.valor_multa||'';
   document.getElementById('e-obs').value=c.observacoes||'';
-  const toInput=s=>{if(!s)return'';const str=String(s);if(str.includes('-')&&str.length>=10)return str.substring(0,10);if(!str.includes('/'))return'';const[d,m,y]=str.split('/');return`${y}-${m}-${d}`;};
+  const toInput=s=>{if(!s)return'';const str=String(s).trim();if(/^\d{4}-\d{2}-\d{2}/.test(str))return str.substring(0,10);if(/^\d{2}\/\d{2}\/\d{4}/.test(str)){const[d,m,y]=str.split('/');return`${y}-${m}-${d}`;}return'';};
   document.getElementById('e-contrat').value=toInput(c.data_contratacao);
   document.getElementById('e-solic').value=toInput(c.data_solicitacao);
   document.querySelectorAll('#edit-disc-chips .disc-chip').forEach(el=>el.classList.toggle('selected',S.editDiscsSel.includes(el.textContent.trim())));
