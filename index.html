@@ -341,15 +341,15 @@ function renderHome(){
   const emCanc=todos.filter(c=>c.status==='Em Cancelamento').length;
   const cancelados=todos.filter(c=>c.status==='Cancelado').length;
   const alertas=todos.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
-  const revertidos=f.filter(c=>c.status==='Ativo').length;
-const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
-const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
   const multas=todos.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
   let f=todos;
   if(S.filtro==='Ativo')f=f.filter(c=>c.status==='Ativo');
   else if(S.filtro==='Em Cancelamento')f=f.filter(c=>c.status==='Em Cancelamento');
   else if(S.filtro==='Cancelado')f=f.filter(c=>c.status==='Cancelado');
   if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_solicitacao)===S.filtroMes);
+  const revertidos=f.filter(c=>c.status==='Ativo').length;
+const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
+const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
   const meses=mesesDisponiveis(todos);
   let ops=`<option value="todos">Todos os meses</option>`;
   meses.forEach(ma=>{const[m,y]=ma.split('/');ops+=`<option value="${ma}"${S.filtroMes===ma?' selected':''}>${nomeMes(m)}/${y}</option>`;});
@@ -358,17 +358,16 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
       <div class="metric metric-accent"><div class="metric-label">Em cancelamento</div><div class="metric-value">${emCanc}</div></div>
       <div class="metric metric-warn"><div class="metric-label">Alertas +5 dias</div><div class="metric-value alerta">${alertas}</div></div>
       <div class="metric"><div class="metric-label">Cancelados</div><div class="metric-value">${cancelados}</div></div>
-      <div class="metric"><div class="metric-label">Multas (R$)</div><div class="metric-value" style="font-size:16px;margin-top:4px">${multas.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>
-      <div class="metric metric-success"><div class="metric-label">Revertidos</div><div class="metric-value success">${revertidos}</div></div>
+<div class="metric"><div class="metric-label">Multas (R$)</div><div class="metric-value" style="font-size:16px;margin-top:4px">${multas.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>
+    <div class="metric metric-success"><div class="metric-label">Revertidos</div><div class="metric-value success">${revertidos}</div></div>
     <div class="metric metric-success"><div class="metric-label">Taxa de reversão</div><div class="metric-value success" style="font-size:18px;margin-top:4px">${taxaReversao}%</div></div>
-    </div>
-    <div class="section-title">Filtros</div>
+  </div>
+  <div class="section-title">Filtros</div>
     <div class="filter-row">
       <div class="filter-chip${S.filtro==='todos'?' active':''}" onclick="setFiltro('todos')">Todos</div>
       <div class="filter-chip${S.filtro==='Ativo'?' active':''}" onclick="setFiltro('Ativo')">Revertidos</div>
       <div class="filter-chip${S.filtro==='Em Cancelamento'?' active':''}" onclick="setFiltro('Em Cancelamento')">Em cancelamento</div>
       <div class="filter-chip${S.filtro==='Cancelado'?' active':''}" onclick="setFiltro('Cancelado')">Cancelados</div>
-    </div>
     <div class="month-wrap"><select onchange="setFiltroMes(this.value)">${ops}</select><span class="month-arrow">&#9660;</span></div>
     <div class="section-title">Contratos (${f.length})</div>`;
   if(f.length===0){html+='<div class="empty">Nenhum contrato encontrado.</div>';}
