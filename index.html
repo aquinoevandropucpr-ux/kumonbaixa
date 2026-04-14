@@ -89,6 +89,17 @@
     .unit-wrap select{width:100%;padding:10px 36px 10px 12px;font-size:14px;font-weight:600;border:0.5px solid var(--kb-border);border-radius:var(--kb-radius-sm);background:#fff;color:var(--kb-blue);-webkit-appearance:none;appearance:none;cursor:pointer}
     .unit-wrap select:focus{outline:2px solid var(--kb-blue);outline-offset:-1px}
     .unit-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--kb-blue);font-size:12px}
+    .calc-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:100}
+.calc-box{background:#fff;border-radius:var(--kb-radius);padding:20px;width:88%;max-width:340px}
+.calc-title{font-size:14px;font-weight:600;color:var(--kb-text);margin-bottom:14px}
+.calc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--kb-border);font-size:13px}
+.calc-row:last-of-type{border-bottom:none}
+.calc-label{color:var(--kb-muted)}
+.calc-val{font-weight:600;color:var(--kb-text)}
+.calc-destaque{color:#003087;font-size:15px}
+.calc-actions{display:flex;gap:8px;margin-top:14px}
+.btn-calc-cancel{flex:1;padding:10px;background:#f5f7fc;color:var(--kb-muted);border:0.5px solid var(--kb-border);border-radius:var(--kb-radius-sm);font-size:13px;cursor:pointer}
+.btn-calc-apply{flex:1;padding:10px;background:#003087;color:#fff;border:none;border-radius:var(--kb-radius-sm);font-size:13px;font-weight:600;cursor:pointer}
   </style>
 </head>
 <body>
@@ -157,6 +168,28 @@
         </div>
       </div>
       <div class="field"><label>Valor da multa (R$)</label><input type="number" id="f-multa" placeholder="0,00" step="0.01" min="0" inputmode="decimal"></div>
+      <button type="button" style="width:100%;padding:10px;background:#e8eef8;color:#003087;border:0.5px solid #003087;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px" onclick="abrirCalculadora()">Calcular multa</button>
+
+<!-- Modal calculadora -->
+<div class="calc-overlay" id="calc-overlay" style="display:none">
+  <div class="calc-box">
+    <div class="calc-title">Calculadora de multa</div>
+    <div class="calc-row"><span class="calc-label">Data de contratação</span><span class="calc-val" id="calc-contrat">—</span></div>
+    <div class="calc-row"><span class="calc-label">Data de solicitação</span><span class="calc-val" id="calc-solic">—</span></div>
+    <div class="calc-row"><span class="calc-label">Meses decorridos</span><span class="calc-val" id="calc-decorridos">—</span></div>
+    <div class="calc-row"><span class="calc-label">Meses a vencer</span><span class="calc-val" id="calc-avencer">—</span></div>
+    <div class="field" style="margin:12px 0 0">
+      <label>Valor da mensalidade (R$)</label>
+      <input type="number" id="calc-mensalidade" placeholder="0,00" step="0.01" min="0" inputmode="decimal" oninput="recalcular()">
+    </div>
+    <div class="calc-row"><span class="calc-label">Valor total</span><span class="calc-val" id="calc-total">R$ 0,00</span></div>
+    <div class="calc-row"><span class="calc-label">Multa (20%)</span><span class="calc-val calc-destaque" id="calc-multa">R$ 0,00</span></div>
+    <div class="calc-actions">
+      <button class="btn-calc-cancel" onclick="fecharCalculadora()">Cancelar</button>
+      <button class="btn-calc-apply" onclick="aplicarMulta()">Aplicar</button>
+    </div>
+  </div>
+</div>
       <div class="field"><label>Status inicial</label>
         <div class="status-select-row">
           <div class="status-opt selected" onclick="selStatus(this,'Em Cancelamento')">Em cancelamento</div>
@@ -526,6 +559,57 @@ async function salvarContrato(){
 
 function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+n).classList.add('active');}
 function navTo(n){showScreen(n);if(n==='alertas')carregarAlertas();if(n==='home')renderHome();}
+  function abrirCalculadora(){
+  const contrat=document.getElementById('f-contrat').value;
+  const solic=document.getElementById('f-solic').value;
+  if(!contrat||!solic){
+    document.getElementById('novo-msg').textContent='Preencha as datas antes de calcular.';
+    return;
+  }
+  const dContrat=new Date(contrat);
+  const dSolic=new Date(solic);
+  const mesesDecorridos=Math.floor((dSolic-dContrat)/(1000*60*60*24*30.44));
+  const mesesAvencer=Math.max(0,12-mesesDecorridos);
+  document.getElementById('calc-contrat').textContent=formatarData(contrat+'T12:00:00');
+  document.getElementById('calc-solic').textContent=formatarData(solic+'T12:00:00');
+  document.getElementById('calc-decorridos').textContent=mesesDecorridos+' mês(es)';
+  document.getElementById('calc-avencer').textContent=mesesAvencer+' mês(es)';
+  document.getElementById('calc-mensalidade').value='';
+  document.getElementById('calc-total').textContent='R$ 0,00';
+  document.getElementById('calc-multa').textContent='R$ 0,00';
+  document.getElementById('calc-overlay').style.display='flex';
+}
+
+function recalcular(){
+  const solic=document.getElementById('f-solic').value;
+  const contrat=document.getElementById('f-contrat').value;
+  const dContrat=new Date(contrat);
+  const dSolic=new Date(solic);
+  const mesesDecorridos=Math.floor((dSolic-dContrat)/(1000*60*60*24*30.44));
+  const mesesAvencer=Math.max(0,12-mesesDecorridos);
+  const mensalidade=parseFloat(document.getElementById('calc-mensalidade').value)||0;
+  const total=mesesAvencer*mensalidade;
+  const multa=total*0.2;
+  document.getElementById('calc-total').textContent='R$ '+total.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  document.getElementById('calc-multa').textContent='R$ '+multa.toLocaleString('pt-BR',{minimumFractionDigits:2});
+}
+
+function fecharCalculadora(){
+  document.getElementById('calc-overlay').style.display='none';
+}
+
+function aplicarMulta(){
+  const solic=document.getElementById('f-solic').value;
+  const contrat=document.getElementById('f-contrat').value;
+  const dContrat=new Date(contrat);
+  const dSolic=new Date(solic);
+  const mesesDecorridos=Math.floor((dSolic-dContrat)/(1000*60*60*24*30.44));
+  const mesesAvencer=Math.max(0,12-mesesDecorridos);
+  const mensalidade=parseFloat(document.getElementById('calc-mensalidade').value)||0;
+  const multa=(mesesAvencer*mensalidade)*0.2;
+  document.getElementById('f-multa').value=multa.toFixed(2);
+  fecharCalculadora();
+}
 </script>
 </body>
 </html>
