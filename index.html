@@ -503,9 +503,11 @@ async function salvarContrato(){
     valor_multa:document.getElementById('f-multa').value||0,
     status:S.statusSel,
     observacoes:document.getElementById('f-obs').value.trim()
-  };
-  if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
-  if(!dados.data_solicitacao){msg.textContent='Informe a data de solicitação.';return;}
+  if(!dados.nome_responsavel){msg.textContent='Informe o nome do responsável.';return;}
+    if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
+    if(!dados.data_contratacao){msg.textContent='Informe a data de contratação.';return;}
+    if(!dados.data_solicitacao){msg.textContent='Informe a data de solicitação.';return;}
+    if(!dados.disciplinas){msg.textContent='Selecione ao menos uma disciplina.';return;}
   document.getElementById('btn-salvar').disabled=true;
   msg.textContent='Salvando...';msg.style.color='var(--kb-muted)';
   try{
