@@ -235,6 +235,11 @@
 </div>
 <script>
 const API='https://script.google.com/macros/s/AKfycbwFoftUZ5JBjp38GsI1j2jAfyRY94F6ivi2u2Agvk7OUAn78nRoukRUhwLqCBycRpM/exec';
+  function formatarData(v){
+  if(!v)return'—';
+  try{return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});}
+  catch(e){return v;}
+}
 let S={unidade:'Centro',usuario:'',contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento'};
 
 async function api(p){const r=await fetch(API+'?'+new URLSearchParams(p));return r.json();}
@@ -333,7 +338,7 @@ function renderHome(){
     html+=`<div class="card${al?' card-alerta':''}" onclick="verDetalhe('${c.id}')">
       <div class="card-name">${c.nome_aluno||'—'}</div>
       <div class="card-sub">${c.nome_responsavel||'—'} &middot; ${c.disciplinas||'—'}</div>
-      <div class="card-row"><span class="badge-status ${bc}">${al?'&#9888; +5 dias':c.status}</span><span style="font-size:11px;color:var(--kb-muted)">${c.data_solicitacao||''}</span></div>
+      <div class="card-row"><span class="badge-status ${bc}">${al?'&#9888; +5 dias':c.status}</span><span style="font-size:11px;color:var(--kb-muted)">${formatarData(c.data_solicitacao)}</span></div>
     </div>`;
   });
   el.innerHTML=html;
@@ -353,7 +358,7 @@ async function carregarAlertas(){
       r.registros.forEach(c=>{html+=`<div class="card card-alerta" onclick="verDetalhe('${c.id}')">
         <div class="card-name">${c.nome_aluno||'—'}</div>
         <div class="card-sub">${c.nome_responsavel||'—'} &middot; ${c.disciplinas||'—'}</div>
-        <div class="card-row"><span class="badge-status st-alerta">&#9888; ${c.dias_cancelamento} dias</span><span style="font-size:11px;color:var(--kb-muted)">${c.data_solicitacao||''}</span></div>
+        ...dias</span><span style="font-size:11px;color:var(--kb-muted)">${formatarData(c.data_solicitacao)}</span></div>
       </div>`;});
       el.innerHTML=html;
     }
@@ -371,8 +376,8 @@ function verDetalhe(id){
       <div class="detail-row"><span class="detail-label">Aluno</span><span class="detail-val">${c.nome_aluno||'—'}</span></div>
       <div class="detail-row"><span class="detail-label">Responsável</span><span class="detail-val">${c.nome_responsavel||'—'}</span></div>
       <div class="detail-row"><span class="detail-label">Disciplina(s)</span><span class="detail-val">${c.disciplinas||'—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Contratação</span><span class="detail-val">${c.data_contratacao||'—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Solicitação</span><span class="detail-val">${c.data_solicitacao||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Contratação</span><span class="detail-val">${formatarData(c.data_contratacao)}</span></div>
+      <div class="detail-row"><span class="detail-label">Solicitação</span><span class="detail-val">${formatarData(c.data_solicitacao)}</span></div>
       <div class="detail-row"><span class="detail-label">Multa (R$)</span><span class="detail-val">${parseFloat(c.valor_multa||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span></div>
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-val">${c.status||'—'}</span></div>
       <div class="detail-row"><span class="detail-label">Registrado por</span><span class="detail-val">${c.registrado_por||'—'}</span></div>
