@@ -345,6 +345,7 @@ function renderHome(){
   const cancelados=todos.filter(c=>c.status==='Cancelado').length;
   const alertas=todos.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
   const multas=todos.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
+  window._todos = todos;
   let f=todos;
   if(S.filtro==='Ativo')f=f.filter(c=>c.status==='Ativo');
   else if(S.filtro==='Em Cancelamento')f=f.filter(c=>c.status==='Em Cancelamento');
@@ -633,7 +634,7 @@ function aplicarMulta(){
   const dataGeracao = new Date().toLocaleString('pt-BR',{timeZone:'America/Rio_Branco'});
 
   // Reaplica os filtros para montar a tabela
-  let f = todos.slice();
+  let f = (window._todos || []).slice();
   if(filtroStatus==='Ativo') f=f.filter(c=>c.status==='Ativo');
   else if(filtroStatus==='Em Cancelamento') f=f.filter(c=>c.status==='Em Cancelamento');
   else if(filtroStatus==='Cancelado') f=f.filter(c=>c.status==='Cancelado');
