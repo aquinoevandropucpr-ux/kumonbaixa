@@ -646,7 +646,7 @@ function aplicarMulta(){
   const revertidos = f.filter(c=>c.status==='Ativo').length;
   const alertas = f.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
   const multas  = f.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
-  const base    = filtroMes!=='todos'?f.length:todos.length;
+  const base = filtroMes=='todos'?f.length:(window._todos||[]).length;
   const taxa    = base>0?((revertidos/base)*100).toFixed(1):0;
   const mesLabel= filtroMes==='todos'?'Todos os meses':filtroMes;
 
