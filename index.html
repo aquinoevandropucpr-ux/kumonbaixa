@@ -693,11 +693,11 @@ function aplicarMulta(){
   doc.text('Contratos filtrados ('+f.length+')',14,ty-3);
 
   const linhas=f.map(c=>[
-    (c.aluno||'—').toUpperCase(),
-    c.responsavel||'—',
+    (c.nome_aluno||'—').toUpperCase(),
+    c.nome_responsavel||'—',
     c.disciplinas||'—',
     c.status||'—',
-    c.data_solicitacao ? c.data_solicitacao.split('-').reverse().join('/') : '—',
+    c.data_solicitacao ? new Date(c.data_solicitacao).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco'}) : '—',
     c.valor_multa?'R$ '+parseFloat(c.valor_multa).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'
   ]);
 
