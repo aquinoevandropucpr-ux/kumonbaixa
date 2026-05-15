@@ -507,7 +507,8 @@ async function salvarEdicao(){
     valor_multa:document.getElementById('e-multa').value||0,
     status:S.editStatusSel||'Em Cancelamento',
     observacoes:document.getElementById('e-obs').value.trim(),
-data_baixa:document.getElementById('e-baixa').value
+observacoes:document.getElementById('e-obs').value.trim(),
+    data_baixa:document.getElementById('e-baixa').value
   };
   if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
   document.getElementById('btn-editar-salvar').disabled=true;
