@@ -469,6 +469,7 @@ function abrirEdicao(id){
   document.getElementById('e-aluno').value=c.nome_aluno||'';
   document.getElementById('e-multa').value=c.valor_multa||'';
   document.getElementById('e-obs').value=c.observacoes||'';
+  document.getElementById('e-baixa').value=toInput(c.data_baixa)||'';
   const toInput=s=>{if(!s)return'';const str=String(s).trim();if(/^\d{4}-\d{2}-\d{2}/.test(str))return str.substring(0,10);if(/^\d{2}\/\d{2}\/\d{4}/.test(str)){const[d,m,y]=str.split('/');return`${y}-${m}-${d}`;}return'';};
   document.getElementById('e-contrat').value=toInput(c.data_contratacao);
   document.getElementById('e-solic').value=toInput(c.data_solicitacao);
@@ -505,7 +506,8 @@ async function salvarEdicao(){
     disciplinas:(S.editDiscsSel||[]).join(', '),
     valor_multa:document.getElementById('e-multa').value||0,
     status:S.editStatusSel||'Em Cancelamento',
-    observacoes:document.getElementById('e-obs').value.trim()
+    observacoes:document.getElementById('e-obs').value.trim(),
+data_baixa:document.getElementById('e-baixa').value
   };
   if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
   document.getElementById('btn-editar-salvar').disabled=true;
@@ -550,7 +552,8 @@ async function salvarContrato(){
     disciplinas:S.discsSel.join(', '),
     valor_multa:document.getElementById('f-multa').value||0,
     status:S.statusSel,
-    observacoes:document.getElementById('f-obs').value.trim()
+    observacoes:document.getElementById('f-obs').value.trim(),
+data_baixa:document.getElementById('f-baixa').value
   };
   if(!dados.nome_responsavel){msg.textContent='Informe o nome do responsável.';return;}
     if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
@@ -563,7 +566,7 @@ async function salvarContrato(){
     const r=await api({action:'criar',unidade:S.unidade,dados:JSON.stringify(dados),usuario:S.usuario});
     if(r.sucesso){
       msg.style.color='#2d5a2d';msg.textContent='Registrado com sucesso!';
-      ['f-resp','f-aluno','f-contrat','f-solic','f-multa','f-obs'].forEach(i=>document.getElementById(i).value='');
+      ['f-resp','f-aluno','f-contrat','f-solic','f-multa','f-obs','f-baixa'].forEach(i=>document.getElementById(i).value='');
       document.querySelectorAll('.disc-chip').forEach(e=>e.classList.remove('selected'));
       S.discsSel=[];
       setTimeout(()=>{msg.textContent='';navTo('home');carregarHome();},1500);
