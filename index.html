@@ -173,6 +173,7 @@
         </div>
       </div>
       <div class="field"><label>Valor da multa (R$)</label><input type="number" id="f-multa" placeholder="0,00" step="0.01" min="0" inputmode="decimal"></div>
+      <div class="field"><label>Data da baixa</label><input type="date" id="f-baixa"></div>
       <button type="button" style="width:100%;padding:10px;background:#e8eef8;color:#003087;border:0.5px solid #003087;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:14px" onclick="abrirCalculadora()">Calcular multa</button>
 
 <!-- Modal calculadora -->
@@ -265,6 +266,7 @@
         </div>
       </div>
       <div class="field"><label>Observações</label><textarea id="e-obs"></textarea></div>
+      <div class="field"><label>Data da baixa</label><input type="date" id="e-baixa"></div>
       <div class="msg-err" id="editar-msg"></div>
       <button class="btn-primary" id="btn-editar-salvar" onclick="salvarEdicao()">Salvar alterações</button>
     </div>
