@@ -276,9 +276,11 @@
 <script>
 const API='https://script.google.com/macros/s/AKfycbwFoftUZ5JBjp38GsI1j2jAfyRY94F6ivi2u2Agvk7OUAn78nRoukRUhwLqCBycRpM/exec';
   function formatarData(v){
-  if(!v)return'—';
-  try{return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});}
-  catch(e){return v;}
+  if(!v)return'-';
+  try{
+    if(String(v).includes('/')){const[d,m,y]=String(v).split('/');return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});}
+    return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
+  }catch(e){return v;}
 }
 let S={unidade:'Centro',usuario:'',contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento'};
 
@@ -430,6 +432,7 @@ function verDetalhe(id){
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-val">${c.status||'—'}</span></div>
       <div class="detail-row"><span class="detail-label">Registrado por</span><span class="detail-val">${c.registrado_por||'—'}</span></div>
       <div class="detail-row"><span class="detail-label">Observações</span><span class="detail-val">${c.observacoes||'—'}</span></div>
+      ${c.data_baixa?`<div class="detail-row"><span class="detail-label">Data da baixa</span><span class="detail-val">${c.data_baixa}</span></div>`:''}
     </div>
     <div class="detail-card">
       <div class="section-title">Atualizar status</div>
