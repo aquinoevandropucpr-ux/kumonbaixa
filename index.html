@@ -333,7 +333,7 @@ function nomeMes(n){
 
 function mesesDisponiveis(c){
   const s=new Set();
-  c.forEach(x=>{const m=extrairMesAno(x.data_solicitacao);if(m)s.add(m);});
+  c.forEach(x=>{const m=extrairMesAno(x.data_baixa||x.data_solicitacao);if(m)s.add(m);});
   return Array.from(s).sort((a,b)=>{
     const[ma,ya]=a.split('/');const[mb,yb]=b.split('/');
     return(parseInt(yb)*100+parseInt(mb))-(parseInt(ya)*100+parseInt(ma));
@@ -352,7 +352,7 @@ function renderHome(){
   if(S.filtro==='Ativo')f=f.filter(c=>c.status==='Ativo');
   else if(S.filtro==='Em Cancelamento')f=f.filter(c=>c.status==='Em Cancelamento');
   else if(S.filtro==='Cancelado')f=f.filter(c=>c.status==='Cancelado');
-  if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_solicitacao)===S.filtroMes);
+  if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_baixa||c.data_solicitacao)===S.filtroMes);
   const revertidos=f.filter(c=>c.status==='Ativo').length;
 const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
 const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
