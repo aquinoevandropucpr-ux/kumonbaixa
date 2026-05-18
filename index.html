@@ -725,19 +725,20 @@ function aplicarMulta(){
     c.disciplinas||'—',
     c.status||'—',
     c.data_solicitacao ? new Date(c.data_solicitacao).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco'}) : '—',
-    c.valor_multa?'R$ '+parseFloat(c.valor_multa).toLocaleString('pt-BR',{minimumFractionDigits:2}):'—'
+    c.valor_multa?'R$ '+parseFloat(c.valor_multa).toLocaleString('pt-BR',{minimumFractionDigits:2}):'-',
+c.data_baixa?new Date(c.data_baixa).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco'}):'-'
   ]);
 
   doc.autoTable({
     startY:ty,
-    head:[['Aluno','Responsável','Disciplina','Status','Data Solic.','Multa']],
+    head:[['Aluno','Responsável','Disciplina','Status','Data Solic.','Multa','Data Baixa']],
     body:linhas.length>0?linhas:[['Nenhum registro','','','','','']],
     headStyles:{fillColor:[0,48,135],textColor:255,fontSize:8,fontStyle:'bold'},
     bodyStyles:{fontSize:8,textColor:[40,40,40]},
     alternateRowStyles:{fillColor:[245,247,250]},
     columnStyles:{
       0:{cellWidth:40},1:{cellWidth:38},2:{cellWidth:28},
-      3:{cellWidth:28},4:{cellWidth:26},5:{cellWidth:26}
+      3:{cellWidth:26},4:{cellWidth:22},5:{cellWidth:22},6:{cellWidth:22}
     },
     margin:{left:14,right:14},
     didDrawPage:(data)=>{
