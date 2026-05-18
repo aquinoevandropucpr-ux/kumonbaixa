@@ -674,14 +674,16 @@ function aplicarMulta(){
   else if(filtroStatus==='Em Cancelamento') f=f.filter(c=>c.status==='Em Cancelamento');
   else if(filtroStatus==='Cancelado') f=f.filter(c=>c.status==='Cancelado');
   if(filtroMes!=='todos') f=f.filter(c=>extrairMesAno(c.data_solicitacao)===filtroMes);
-   f.sort((a,b)=>{
+  f.sort((a,b)=>{
   const toMs=d=>{
     if(!d||d==='-')return -1;
     if(String(d).includes('T'))return new Date(d).getTime();
     const p=String(d).split('/');
     return p.length===3?new Date(p[2],p[1]-1,p[0]).getTime():-1;
   };
-  return toMs(b.data_baixa)-toMs(a.data_baixa);
+  const diffBaixa=toMs(b.data_baixa)-toMs(a.data_baixa);
+  if(diffBaixa!==0)return diffBaixa;
+  return toMs(b.data_solicitacao)-toMs(a.data_solicitacao);
 });
 
   // Métricas
