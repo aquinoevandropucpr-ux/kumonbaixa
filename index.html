@@ -430,7 +430,7 @@ function verDetalhe(id){
       <div class="detail-row"><span class="detail-label">Solicitação</span><span class="detail-val">${formatarData(c.data_solicitacao)}</span></div>
       <div class="detail-row"><span class="detail-label">Multa (R$)</span><span class="detail-val">${parseFloat(c.valor_multa||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span></div>
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-val">${c.status||'—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Registrado por</span><span class="detail-val">${c.registrado_por||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Data da baixa</span><span class="detail-val">${c.data_baixa||'-'}</span></div>
       <div class="detail-row"><span class="detail-label">Observações</span><span class="detail-val">${c.observacoes||'—'}</span></div>
       ${c.data_baixa?`<div class="detail-row"><span class="detail-label">Data da baixa</span><span class="detail-val">${c.data_baixa}</span></div>`:''}
     </div>
