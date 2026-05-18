@@ -348,16 +348,16 @@ function mesesDisponiveis(c){
 function renderHome(){
   const el=document.getElementById('home-content');
   const todos=S.contratos;
-  const emCanc=todos.filter(c=>c.status==='Em Cancelamento').length;
-  const cancelados=todos.filter(c=>c.status==='Cancelado').length;
-  const alertas=todos.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
-  const multas=todos.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
   window._todos = todos;
   let f=todos;
   if(S.filtro==='Ativo')f=f.filter(c=>c.status==='Ativo');
   else if(S.filtro==='Em Cancelamento')f=f.filter(c=>c.status==='Em Cancelamento');
   else if(S.filtro==='Cancelado')f=f.filter(c=>c.status==='Cancelado');
   if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_baixa||c.data_solicitacao)===S.filtroMes);
+  const emCanc=f.filter(c=>c.status==='Em Cancelamento').length;
+const cancelados=f.filter(c=>c.status==='Cancelado').length;
+const alertas=f.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
+const multas=f.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
   const revertidos=f.filter(c=>c.status==='Ativo').length;
 const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
 const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
