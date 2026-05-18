@@ -403,8 +403,10 @@ function setFiltro(f){S.filtro=f;renderHome();}
 function setFiltroMes(m){S.filtroMes=m;renderHome();}
 function atualizarBadgeAlertas(){
   const total=(window._todos||[]).filter(c=>c.alerta_5_dias==='SIM').length;
-  const badge=document.getElementById('badge-alerta');
-  if(badge){badge.textContent=total;badge.style.display=total>0?'flex':'none';}
+  document.querySelectorAll('.badge-alerta').forEach(b=>{
+    b.textContent=total;
+    b.style.display=total>0?'flex':'none';
+  });
 }
 async function carregarAlertas(){
   const el=document.getElementById('alertas-content');
