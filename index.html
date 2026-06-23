@@ -362,6 +362,7 @@ const cancelados=f.filter(c=>c.status==='Cancelado').length;
 const alertas=f.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
 const multas=f.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
   const revertidos=f.filter(c=>c.status==='Ativo').length;
+  const concluintes=f.filter(c=>c.status==='Concluinte').length;
 const cadastradosMes=S.filtroMes==='todos'?todos.length:f.length;
 const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1):0;
   const meses=mesesDisponiveis(todos);
@@ -374,6 +375,7 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
       <div class="metric"><div class="metric-label">Cancelados</div><div class="metric-value">${cancelados}</div></div>
 <div class="metric"><div class="metric-label">Multas (R$)</div><div class="metric-value" style="font-size:16px;margin-top:4px">${multas.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div></div>
     <div class="metric metric-success"><div class="metric-label">Revertidos</div><div class="metric-value success">${revertidos}</div></div>
+    <div class="metric metric-success"><div class="metric-label">Concluintes</div><div class="metric-value success">${concluintes}</div></div>
     <div class="metric metric-success"><div class="metric-label">Taxa de reversão</div><div class="metric-value success" style="font-size:18px;margin-top:4px">${taxaReversao}%</div></div>
   </div>
   <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
