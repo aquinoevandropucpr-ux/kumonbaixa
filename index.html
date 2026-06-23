@@ -199,10 +199,11 @@
 </div>
       <div class="field"><label>Status inicial</label>
         <div class="status-select-row">
-          <div class="status-opt selected" onclick="selStatus(this,'Em Cancelamento')">Em cancelamento</div>
-          <div class="status-opt" onclick="selStatus(this,'Ativo')">Revertido</div>
-          <div class="status-opt" onclick="selStatus(this,'Cancelado')">Cancelado</div>
-        </div>
+  <div class="status-opt selected" onclick="selStatus(this,'Em Cancelamento')">Em cancelamento</div>
+  <div class="status-opt" onclick="selStatus(this,'Ativo')">Revertido</div>
+  <div class="status-opt" onclick="selStatus(this,'Cancelado')">Cancelado</div>
+  <div class="status-opt" onclick="selStatus(this,'Concluinte')">Concluinte</div>
+</div>
       </div>
       <div class="field"><label>Observações</label><textarea id="f-obs" placeholder="Opcional"></textarea></div>
       <div class="msg-err" id="novo-msg"></div>
@@ -379,10 +380,11 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
 </div>
   <div class="section-title">Filtros</div>
     <div class="filter-row">
-      <div class="filter-chip${S.filtro==='todos'?' active':''}" onclick="setFiltro('todos')">Todos</div>
-      <div class="filter-chip${S.filtro==='Ativo'?' active':''}" onclick="setFiltro('Ativo')">Revertidos</div>
-      <div class="filter-chip${S.filtro==='Em Cancelamento'?' active':''}" onclick="setFiltro('Em Cancelamento')">Em cancelamento</div>
-      <div class="filter-chip${S.filtro==='Cancelado'?' active':''}" onclick="setFiltro('Cancelado')">Cancelados</div>
+    <div class="filter-chip${S.filtro==='todos'?' active':''}" onclick="setFiltro('todos')">Todos</div>
+<div class="filter-chip${S.filtro==='Ativo'?' active':''}" onclick="setFiltro('Ativo')">Revertidos</div>
+<div class="filter-chip${S.filtro==='Em Cancelamento'?' active':''}" onclick="setFiltro('Em Cancelamento')">Em cancelamento</div>
+<div class="filter-chip${S.filtro==='Cancelado'?' active':''}" onclick="setFiltro('Cancelado')">Cancelados</div>
+<div class="filter-chip${S.filtro==='Concluinte'?' active':''}" onclick="setFiltro('Concluinte')">Concluinte</div>
     <div class="month-wrap"><select onchange="setFiltroMes(this.value)">${ops}</select><span class="month-arrow">&#9660;</span></div>
     <div class="section-title">Contratos (${f.length})</div>`;
   if(f.length===0){html+='<div class="empty">Nenhum contrato encontrado.</div>';}
