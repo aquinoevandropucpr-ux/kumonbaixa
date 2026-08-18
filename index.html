@@ -105,6 +105,7 @@
 .metric-value.success{color:#2d5a2d}
     .lista-grupo{position:sticky;top:39px;z-index:4;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--kb-muted);background:var(--kb-surface);margin:14px -16px 4px;padding:7px 18px}
     .lista-grupo:first-of-type{margin-top:0}
+    .lista-grupo.pendente{color:var(--kb-yellow-dark)}
     .linha{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%;background:#fff;border:0.5px solid var(--kb-border);border-left:3px solid var(--kb-muted);padding:10px 12px;margin-bottom:6px;cursor:pointer}
     .linha:active{opacity:.85}
     .linha-nome{font-size:14px;font-weight:600;color:var(--kb-text)}
@@ -372,10 +373,11 @@ function parseDataObj(v){
   const dt=new Date(s);return isNaN(dt.getTime())?null:dt;
 }
 function rotuloGrupo(dt){
-  if(!dt)return'Sem data';
+  if(!dt)return'Sem data da baixa';
   return String(dt.getDate()).padStart(2,'0')+' de '+MESES_EXT[dt.getMonth()]+' de '+dt.getFullYear();
 }
-function dataRef(c){return parseDataObj(c.data_baixa||c.data_solicitacao);}
+function dataRef(c){return parseDataObj(c.data_baixa);}
+function semBaixa(c){return !dataRef(c);}
 function ehAlerta(c){return c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento';}
 function classeLinha(c){
   if(ehAlerta(c))return'ln-alerta';
@@ -437,7 +439,10 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
 
   const ordenados=f.slice().sort((a,b)=>{
     const da=dataRef(a),db=dataRef(b);
-    return (db?db.getTime():0)-(da?da.getTime():0);
+    if(!da&&!db)return 0;
+    if(!da)return -1;
+    if(!db)return 1;
+    return db.getTime()-da.getTime();
   });
 
   html+=`<div class="barra-contagem"><b>${f.length}</b> contrato${f.length===1?'':'s'} &middot; ${emCanc} em cancelamento${alertas?` &middot; <span class="bc-alerta">${alertas} alerta${alertas===1?'':'s'}</span>`:''}</div>`;
@@ -447,7 +452,7 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
     let grupoAtual='';
     ordenados.forEach(c=>{
       const rot=rotuloGrupo(dataRef(c));
-      if(rot!==grupoAtual){grupoAtual=rot;html+=`<div class="lista-grupo">${rot}</div>`;}
+      if(rot!==grupoAtual){grupoAtual=rot;html+=`<div class="lista-grupo${semBaixa(c)?' pendente':''}">${rot}</div>`;}
       html+=`<div class="linha ${classeLinha(c)}" onclick="verDetalhe('${c.id}')">
         <div style="min-width:0">
           <div class="linha-nome">${c.nome_aluno||'—'}</div>
@@ -586,6 +591,7 @@ observacoes:document.getElementById('e-obs').value.trim(),
     data_baixa:document.getElementById('e-baixa').value
   };
   if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
+  if(dados.status==='Cancelado'&&!dados.data_baixa){msg.textContent='Informe a data da baixa para status Cancelado.';msg.style.color='#8b1a1a';return;}
   document.getElementById('btn-editar-salvar').disabled=true;
   msg.textContent='Salvando...';msg.style.color='var(--kb-muted)';
   try{
@@ -636,6 +642,7 @@ data_baixa:document.getElementById('f-baixa').value
     if(!dados.data_contratacao){msg.textContent='Informe a data de contratação.';return;}
     if(!dados.data_solicitacao){msg.textContent='Informe a data de solicitação.';return;}
     if(!dados.disciplinas){msg.textContent='Selecione ao menos uma disciplina.';return;}
+    if(dados.status==='Cancelado'&&!dados.data_baixa){msg.textContent='Informe a data da baixa para status Cancelado.';return;}
   document.getElementById('btn-salvar').disabled=true;
   msg.textContent='Salvando...';msg.style.color='var(--kb-muted)';
   try{
