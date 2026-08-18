@@ -103,8 +103,8 @@
 .btn-calc-apply{flex:1;padding:10px;background:#003087;color:#fff;border:none;border-radius:var(--kb-radius-sm);font-size:13px;font-weight:600;cursor:pointer}
     .metric-success{border-top:3px solid #2d5a2d}
 .metric-value.success{color:#2d5a2d}
-    .lista-grupo{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--kb-muted);margin:16px 2px 6px}
-    .lista-grupo:first-of-type{margin-top:4px}
+    .lista-grupo{position:sticky;top:39px;z-index:4;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--kb-muted);background:var(--kb-surface);margin:14px -16px 4px;padding:7px 18px}
+    .lista-grupo:first-of-type{margin-top:0}
     .linha{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%;background:#fff;border:0.5px solid var(--kb-border);border-left:3px solid var(--kb-muted);padding:10px 12px;margin-bottom:6px;cursor:pointer}
     .linha:active{opacity:.85}
     .linha-nome{font-size:14px;font-weight:600;color:var(--kb-text)}
@@ -375,6 +375,7 @@ function rotuloGrupo(dt){
   if(!dt)return'Sem data';
   return String(dt.getDate()).padStart(2,'0')+' de '+MESES_EXT[dt.getMonth()]+' de '+dt.getFullYear();
 }
+function dataRef(c){return parseDataObj(c.data_baixa||c.data_solicitacao);}
 function ehAlerta(c){return c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento';}
 function classeLinha(c){
   if(ehAlerta(c))return'ln-alerta';
@@ -435,7 +436,7 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
     <div class="month-wrap"><select onchange="setFiltroMes(this.value)">${ops}</select><span class="month-arrow">&#9660;</span></div>`;
 
   const ordenados=f.slice().sort((a,b)=>{
-    const da=parseDataObj(a.data_solicitacao),db=parseDataObj(b.data_solicitacao);
+    const da=dataRef(a),db=dataRef(b);
     return (db?db.getTime():0)-(da?da.getTime():0);
   });
 
@@ -445,7 +446,7 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
   else{
     let grupoAtual='';
     ordenados.forEach(c=>{
-      const rot=rotuloGrupo(parseDataObj(c.data_solicitacao));
+      const rot=rotuloGrupo(dataRef(c));
       if(rot!==grupoAtual){grupoAtual=rot;html+=`<div class="lista-grupo">${rot}</div>`;}
       html+=`<div class="linha ${classeLinha(c)}" onclick="verDetalhe('${c.id}')">
         <div style="min-width:0">
