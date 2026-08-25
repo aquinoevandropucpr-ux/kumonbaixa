@@ -106,6 +106,7 @@
     .lista-grupo{position:sticky;top:39px;z-index:4;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--kb-muted);background:var(--kb-surface);margin:14px -16px 4px;padding:7px 18px}
     .lista-grupo:first-of-type{margin-top:0}
     .lista-grupo.pendente{color:var(--kb-yellow-dark)}
+    .lista-grupo.revertidos{color:var(--kb-blue);border-top:1px solid var(--kb-border);padding-top:10px;margin-top:18px}
     .linha{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%;background:#fff;border:0.5px solid var(--kb-border);border-left:3px solid var(--kb-muted);padding:10px 12px;margin-bottom:6px;cursor:pointer}
     .linha:active{opacity:.85}
     .linha-nome{font-size:14px;font-weight:600;color:var(--kb-text)}
@@ -358,7 +359,7 @@ function nomeMes(n){
 
 function mesesDisponiveis(c){
   const s=new Set();
-  c.forEach(x=>{const m=extrairMesAno(x.data_baixa||x.data_solicitacao);if(m)s.add(m);});
+  c.forEach(x=>{const m=extrairMesAno(x.data_baixa);if(m)s.add(m);});
   return Array.from(s).sort((a,b)=>{
     const[ma,ya]=a.split('/');const[mb,yb]=b.split('/');
     return(parseInt(yb)*100+parseInt(mb))-(parseInt(ya)*100+parseInt(ma));
@@ -402,7 +403,8 @@ function renderHome(){
   else if(S.filtro==='Em Cancelamento')f=f.filter(c=>c.status==='Em Cancelamento');
   else if(S.filtro==='Cancelado')f=f.filter(c=>c.status==='Cancelado');
   else if(S.filtro==='Concluinte')f=f.filter(c=>c.status==='Concluinte');
-  if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_baixa||c.data_solicitacao)===S.filtroMes);
+  if(S.filtroMes==='sem-baixa')f=f.filter(c=>!extrairMesAno(c.data_baixa));
+  else if(S.filtroMes!=='todos')f=f.filter(c=>extrairMesAno(c.data_baixa)===S.filtroMes);
   const emCanc=f.filter(c=>c.status==='Em Cancelamento').length;
 const cancelados=f.filter(c=>c.status==='Cancelado').length;
 const alertas=f.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
@@ -414,6 +416,7 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
   const meses=mesesDisponiveis(todos);
   let ops=`<option value="todos">Todos os meses</option>`;
   meses.forEach(ma=>{const[m,y]=ma.split('/');ops+=`<option value="${ma}"${S.filtroMes===ma?' selected':''}>${nomeMes(m)}/${y}</option>`;});
+  if(todos.some(c=>!extrairMesAno(c.data_baixa)))ops+=`<option value="sem-baixa"${S.filtroMes==='sem-baixa'?' selected':''}>Sem data da baixa</option>`;
   let html=`
     <div class="metric-grid">
       <div class="metric metric-accent"><div class="metric-label">Em cancelamento</div><div class="metric-value">${emCanc}</div></div>
@@ -437,7 +440,10 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
     </div>
     <div class="month-wrap"><select onchange="setFiltroMes(this.value)">${ops}</select><span class="month-arrow">&#9660;</span></div>`;
 
-  const ordenados=f.slice().sort((a,b)=>{
+  const ehRevertido=c=>c.status==='Ativo';
+  const dataLancamento=c=>parseDataObj(c.data_baixa)||parseDataObj(c.data_solicitacao);
+
+  const ordenados=f.filter(c=>!ehRevertido(c)).sort((a,b)=>{
     const da=dataRef(a),db=dataRef(b);
     if(!da&&!db)return 0;
     if(!da)return -1;
@@ -445,22 +451,36 @@ const taxaReversao=cadastradosMes>0?((revertidos/cadastradosMes)*100).toFixed(1)
     return db.getTime()-da.getTime();
   });
 
-  html+=`<div class="barra-contagem"><b>${f.length}</b> contrato${f.length===1?'':'s'} &middot; ${emCanc} em cancelamento${alertas?` &middot; <span class="bc-alerta">${alertas} alerta${alertas===1?'':'s'}</span>`:''}</div>`;
+  const revertidosLista=f.filter(ehRevertido).sort((a,b)=>{
+    const da=dataLancamento(a),db=dataLancamento(b);
+    if(!da&&!db)return 0;
+    if(!da)return 1;
+    if(!db)return -1;
+    return db.getTime()-da.getTime();
+  });
 
-  if(!ordenados.length){html+='<div class="empty">Nenhum contrato encontrado.</div>';}
-  else{
-    let grupoAtual='';
-    ordenados.forEach(c=>{
-      const rot=rotuloGrupo(dataRef(c));
-      if(rot!==grupoAtual){grupoAtual=rot;html+=`<div class="lista-grupo${semBaixa(c)?' pendente':''}">${rot}</div>`;}
-      html+=`<div class="linha ${classeLinha(c)}" onclick="verDetalhe('${c.id}')">
+  const linhaHtml=c=>`<div class="linha ${classeLinha(c)}" onclick="verDetalhe('${c.id}')">
         <div style="min-width:0">
           <div class="linha-nome">${c.nome_aluno||'—'}</div>
           <div class="linha-sub">${c.nome_responsavel||'—'} &middot; ${c.disciplinas||'—'}</div>
         </div>
         <div class="linha-tag">${rotuloStatus(c)}</div>
       </div>`;
+
+  html+=`<div class="barra-contagem"><b>${f.length}</b> contrato${f.length===1?'':'s'} &middot; ${emCanc} em cancelamento${alertas?` &middot; <span class="bc-alerta">${alertas} alerta${alertas===1?'':'s'}</span>`:''}</div>`;
+
+  if(!ordenados.length&&!revertidosLista.length){html+='<div class="empty">Nenhum contrato encontrado.</div>';}
+  else{
+    let grupoAtual='';
+    ordenados.forEach(c=>{
+      const rot=rotuloGrupo(dataRef(c));
+      if(rot!==grupoAtual){grupoAtual=rot;html+=`<div class="lista-grupo${semBaixa(c)?' pendente':''}">${rot}</div>`;}
+      html+=linhaHtml(c);
     });
+    if(revertidosLista.length){
+      html+=`<div class="lista-grupo revertidos">Revertidos (${revertidosLista.length})</div>`;
+      revertidosLista.forEach(c=>{html+=linhaHtml(c);});
+    }
   }
   el.innerHTML=html;
   atualizarBadgeAlertas();
@@ -742,7 +762,9 @@ function aplicarMulta(){
   if(filtroStatus==='Ativo') f=f.filter(c=>c.status==='Ativo');
   else if(filtroStatus==='Em Cancelamento') f=f.filter(c=>c.status==='Em Cancelamento');
   else if(filtroStatus==='Cancelado') f=f.filter(c=>c.status==='Cancelado');
-  if(filtroMes!=='todos') f=f.filter(c=>extrairMesAno(c.data_solicitacao)===filtroMes);
+  else if(filtroStatus==='Concluinte') f=f.filter(c=>c.status==='Concluinte');
+  if(filtroMes==='sem-baixa') f=f.filter(c=>!extrairMesAno(c.data_baixa));
+  else if(filtroMes!=='todos') f=f.filter(c=>extrairMesAno(c.data_baixa)===filtroMes);
   f.sort((a,b)=>{
   const toMs=d=>{
     if(!d||d==='-')return -1;
@@ -761,9 +783,9 @@ function aplicarMulta(){
   const revertidos = f.filter(c=>c.status==='Ativo').length;
   const alertas = f.filter(c=>c.alerta_5_dias==='SIM'&&c.status==='Em Cancelamento').length;
   const multas  = f.reduce((s,c)=>s+(parseFloat(c.valor_multa)||0),0);
-  const base = filtroMes=='todos'?f.length:(window._todos||[]).length;
+  const base = filtroMes==='todos'?(window._todos||[]).length:f.length;
   const taxa    = base>0?((revertidos/base)*100).toFixed(1):0;
-  const mesLabel= filtroMes==='todos'?'Todos os meses':filtroMes;
+  const mesLabel= filtroMes==='todos'?'Todos os meses':(filtroMes==='sem-baixa'?'Sem data da baixa':filtroMes);
 
   // ── Cabeçalho ─────────────────────────────────────────
   doc.setFillColor(0,48,135);
