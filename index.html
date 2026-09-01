@@ -29,6 +29,47 @@
     .nav-btn.active .nav-bar{opacity:1}
     .badge-alerta{position:absolute;top:2px;right:6px;background:#e53935;color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:16px;height:16px;display:none;align-items:center;justify-content:center;}
     .content{flex:1;overflow-y:auto;padding:16px;background:var(--kb-surface);-webkit-overflow-scrolling:touch}
+    /* ---- MÓDULO DE METAS ---- */
+    .seg{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+    .seg-btn{flex:1;min-width:72px;padding:8px 6px;font-size:12px;font-weight:600;border:0.5px solid var(--kb-border);background:#fff;color:var(--kb-muted);border-radius:var(--kb-radius-sm);cursor:pointer;text-align:center}
+    .seg-btn.on{background:var(--kb-blue);color:#fff;border-color:var(--kb-blue)}
+    .ring-card{background:#fff;border:0.5px solid var(--kb-border);border-radius:var(--kb-radius);padding:18px 14px;margin-bottom:12px;text-align:center}
+    .ring-wrap{display:flex;justify-content:center;margin-bottom:10px}
+    .ring-num{font-size:30px;font-weight:700;fill:var(--kb-text)}
+    .ring-lbl{font-size:11px;fill:var(--kb-muted)}
+    .ring-title{font-size:13px;font-weight:600;color:var(--kb-blue);margin-bottom:2px}
+    .ring-sub{font-size:12px;color:var(--kb-muted);margin-bottom:12px}
+    .ring-foot{font-size:12px;color:var(--kb-muted);line-height:1.7;border-top:0.5px solid var(--kb-border);padding-top:10px;margin-top:4px}
+    .ring-foot b{color:var(--kb-text)}
+    .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+    .mini{background:#fff;border:0.5px solid var(--kb-border);border-radius:var(--kb-radius-sm);padding:10px 12px}
+    .mini-l{font-size:10px;color:var(--kb-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+    .mini-v{font-size:20px;font-weight:600;color:var(--kb-text)}
+    .mini-v.pos{color:#1a7a3c}.mini-v.neg{color:#8b1a1a}
+    .sec-title{font-size:12px;font-weight:700;color:var(--kb-muted);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}
+    .barrow{margin-bottom:9px}
+    .barlbl{display:flex;justify-content:space-between;font-size:12px;color:var(--kb-text);margin-bottom:4px}
+    .barlbl span:last-child{color:var(--kb-muted);font-weight:600}
+    .bartrack{height:8px;background:var(--kb-blue-light);border-radius:4px;overflow:hidden}
+    .barfill{height:100%;background:var(--kb-blue);border-radius:4px}
+    .barfill.y{background:var(--kb-yellow)}
+    .anual{background:#fff;border:0.5px solid var(--kb-border);border-radius:var(--kb-radius);padding:14px 10px;margin-bottom:12px;overflow-x:auto}
+    .anual-legend{display:flex;gap:14px;justify-content:center;font-size:11px;color:var(--kb-muted);margin-top:8px}
+    .lg{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+    .mat-card{background:#fff;border:0.5px solid var(--kb-border);border-left:3px solid var(--kb-blue);border-radius:var(--kb-radius-sm);padding:10px 12px;margin-bottom:8px}
+    .mat-card.d-Português{border-left-color:#b8860b}
+    .mat-card.d-Inglês{border-left-color:#1a7a3c}
+    .mat-nome{font-size:14px;font-weight:600;color:var(--kb-text)}
+    .mat-sub{font-size:12px;color:var(--kb-muted);margin-top:2px}
+    .mat-x{float:right;color:#8b1a1a;font-size:16px;cursor:pointer;padding:0 4px;line-height:1}
+    .metas-grid{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--kb-radius-sm);overflow:hidden;border:0.5px solid var(--kb-border)}
+    .metas-grid th{background:var(--kb-blue);color:#fff;font-size:11px;padding:8px 6px;font-weight:600}
+    .metas-grid td{border-top:0.5px solid var(--kb-border);padding:5px 6px;font-size:13px;text-align:center}
+    .metas-grid td:first-child{text-align:left;color:var(--kb-muted);font-size:12px}
+    .metas-grid input{width:100%;max-width:66px;padding:6px 4px;font-size:13px;text-align:center;border:0.5px solid var(--kb-border);border-radius:6px;-webkit-appearance:none}
+    .metas-grid tfoot td{background:var(--kb-blue-light);font-weight:700;color:var(--kb-blue)}
+    .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1}
+    .btn-ghost{width:100%;padding:11px;background:#fff;color:var(--kb-blue);border:0.5px solid var(--kb-blue);border-radius:var(--kb-radius-sm);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
     .badge-status{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600}
     .st-revertido{background:#e8eef8;color:#003087}
     .st-cancelamento{background:#fff3cd;color:#7a5800}
@@ -123,7 +164,545 @@
     .barra-contagem .bc-alerta{color:#8b1a1a;font-weight:700}
   </style>
   <!-- jsPDF + AutoTable para exportar PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+/* ============================================================
+   MÓDULO DE METAS DE NOVAS MATRÍCULAS
+   Unidade de medida: aluno-matéria (1 aluno x 1 disciplina = 1)
+   Ano de referência: civil (janeiro a dezembro)
+   Meta principal: bruta. Saldo líquido exibido como indicador.
+   ============================================================ */
+
+const MESES_CURTO=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const DISCIPLINAS=['Matemática','Português','Inglês'];
+
+/* ---------- utilitários de data ---------- */
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function ddmm(d){return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0');}
+function hoje0(){const h=new Date();return new Date(h.getFullYear(),h.getMonth(),h.getDate());}
+function segundaDa(d){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());const dw=(x.getDay()+6)%7;x.setDate(x.getDate()-dw);return x;}
+function addDias(d,n){const x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x;}
+function diasUteis(ini,fim){
+  if(!ini||!fim||fim<ini)return 0;
+  let n=0,c=new Date(ini.getFullYear(),ini.getMonth(),ini.getDate());
+  while(c<=fim){const w=c.getDay();if(w!==0&&w!==6)n++;c.setDate(c.getDate()+1);}
+  return n;
+}
+
+/* Semanas (seg-dom) que tocam o mês selecionado */
+function semanasDoMes(ano,mes){
+  const p=new Date(ano,mes-1,1), u=new Date(ano,mes,0);
+  const out=[];let c=segundaDa(p);
+  while(c<=u){out.push({ini:c,fim:addDias(c,6)});c=addDias(c,7);}
+  return out;
+}
+
+/* ---------- período ativo ---------- */
+function periodoAtual(){
+  if(S.mCiclo==='ano')  return {ini:new Date(S.mAno,0,1), fim:new Date(S.mAno,11,31),
+                                rotulo:'Ano '+S.mAno};
+  if(S.mCiclo==='mes')  return {ini:new Date(S.mAno,S.mMes-1,1), fim:new Date(S.mAno,S.mMes,0),
+                                rotulo:nomeMes(S.mMes)+'/'+S.mAno};
+  const sems=semanasDoMes(S.mAno,S.mMes);
+  let i=S.mSemana;
+  if(i===null||i===undefined||i<0||i>=sems.length){
+    const h=hoje0();
+    i=sems.findIndex(s=>h>=s.ini&&h<=s.fim);
+    if(i===-1)i=0;
+    S.mSemana=i;
+  }
+  const s=sems[i];
+  return {ini:s.ini,fim:s.fim,rotulo:'Semana '+ddmm(s.ini)+' a '+ddmm(s.fim)};
+}
+
+/* ---------- metas ---------- */
+function metaMensalDe(unidade,ano,mes){
+  return S.metas
+    .filter(m=>m.ano===ano&&m.mes===mes&&(unidade==='todas'||m.unidade===unidade))
+    .reduce((t,m)=>t+(m.meta_mensal||0),0);
+}
+function metaSemanalExplicita(unidade,ano,mes){
+  const linhas=S.metas.filter(m=>m.ano===ano&&m.mes===mes&&(unidade==='todas'||m.unidade===unidade));
+  if(!linhas.length)return null;
+  if(linhas.some(m=>m.meta_semanal===null||m.meta_semanal===undefined))return null;
+  return linhas.reduce((t,m)=>t+m.meta_semanal,0);
+}
+
+/* Meta da semana: usa a explícita se houver; senão rateia a mensal
+   por dias úteis. Semanas a cavalo entre dois meses somam as duas partes. */
+function metaDaSemana(ini,fim){
+  let total=0;
+  let c=new Date(ini.getFullYear(),ini.getMonth(),ini.getDate());
+  const vistos={};
+  while(c<=fim){
+    const k=c.getFullYear()+'-'+(c.getMonth()+1);
+    if(!vistos[k]){
+      vistos[k]=true;
+      const ano=c.getFullYear(),mes=c.getMonth()+1;
+      const expl=metaSemanalExplicita(S.mUnidade,ano,mes);
+      const pIni=new Date(ano,mes-1,1),pFim=new Date(ano,mes,0);
+      const recIni=ini>pIni?ini:pIni, recFim=fim<pFim?fim:pFim;
+      if(expl!==null){
+        const duSem=diasUteis(ini,fim);
+        total+=duSem>0?expl*(diasUteis(recIni,recFim)/duSem):0;
+      }else{
+        const duMes=diasUteis(pIni,pFim);
+        const mm=metaMensalDe(S.mUnidade,ano,mes);
+        total+=duMes>0?mm*(diasUteis(recIni,recFim)/duMes):0;
+      }
+    }
+    c.setDate(c.getDate()+1);
+  }
+  return total;
+}
+
+function metaDoPeriodo(p){
+  if(S.mCiclo==='ano'){
+    let t=0;for(let m=1;m<=12;m++)t+=metaMensalDe(S.mUnidade,S.mAno,m);return t;
+  }
+  if(S.mCiclo==='mes')return metaMensalDe(S.mUnidade,S.mAno,S.mMes);
+  return metaDaSemana(p.ini,p.fim);
+}
+
+/* ---------- realizado ---------- */
+function noPeriodo(dt,p){return dt&&dt>=p.ini&&dt<=p.fim;}
+
+function matriculasDoPeriodo(p){
+  return S.matriculas.filter(m=>{
+    if(S.mUnidade!=='todas'&&m.unidade!==S.mUnidade)return false;
+    return noPeriodo(parseDataObj(m.data_matricula),p);
+  });
+}
+
+/* Baixas em aluno-matéria: cada registro cancelado traz as matérias
+   que efetivamente saíram no campo `disciplinas`. */
+function baixasDoPeriodo(p){
+  return (S.contratosMetas||[]).filter(c=>{
+    if(S.mUnidade!=='todas'&&c.unidade!==S.mUnidade)return false;
+    if(c.status!=='Cancelado')return false;
+    return noPeriodo(parseDataObj(c.data_baixa),p);
+  });
+}
+function contarMaterias(lista){
+  return lista.reduce((t,c)=>t+String(c.disciplinas||'').split(',').filter(x=>x.trim()).length,0);
+}
+
+/* ---------- carga de dados ---------- */
+async function abrirMetas(){
+  document.getElementById('metas-title').textContent =
+    'Metas — '+(S.mUnidade==='todas'?'Consolidado':S.mUnidade);
+  if(!S.metasCarregado){
+    document.getElementById('metas-content').innerHTML='<div class="loading">Carregando metas...</div>';
+    await carregarDadosMetas();
+  }
+  renderMetas();
+}
+
+async function carregarDadosMetas(){
+  try{
+    const [rm,rt]=await Promise.all([
+      api({action:'listarMatriculas',unidade:'todas'}),
+      api({action:'listarMetas',unidade:'todas',ano:S.mAno})
+    ]);
+    S.matriculas=(rm&&rm.sucesso)?rm.registros:[];
+    S.metas=(rt&&rt.sucesso)?rt.registros:[];
+
+    const listas=await Promise.all(S.unidades.map(u=>api({action:'listar',unidade:u})));
+    S.contratosMetas=[];
+    listas.forEach((r,i)=>{
+      if(r&&r.sucesso)r.registros.forEach(c=>{
+        c.unidade=c.unidade||S.unidades[i];
+        S.contratosMetas.push(c);
+      });
+    });
+    S.metasCarregado=true;
+  }catch(e){
+    document.getElementById('metas-content').innerHTML=
+      '<div class="loading">Erro ao carregar. Verifique a conexão.</div>';
+  }
+}
+
+/* ---------- render ---------- */
+function renderMetas(){
+  const el=document.getElementById('metas-content');
+  const p=periodoAtual();
+  const meta=metaDoPeriodo(p);
+  const mats=matriculasDoPeriodo(p);
+  const realizado=mats.length;
+  const baixas=baixasDoPeriodo(p);
+  const baixasMat=contarMaterias(baixas);
+  const liquido=realizado-baixasMat;
+  const alunos=new Set(mats.map(m=>String(m.nome_aluno).trim().toLowerCase())).size;
+
+  const pct=meta>0?(realizado/meta*100):0;
+  const h=hoje0();
+  const duTotal=diasUteis(p.ini,p.fim);
+  const duDecorridos=h<p.ini?0:diasUteis(p.ini,h<p.fim?h:p.fim);
+  const duRestantes=h>p.fim?0:diasUteis(h>p.ini?h:p.ini,p.fim);
+  const falta=Math.max(0,meta-realizado);
+  const ritmo=duRestantes>0?(falta/duRestantes):0;
+  const projecao=duDecorridos>0?Math.round(realizado/duDecorridos*duTotal):realizado;
+
+  let html='';
+
+  /* seletor de unidade */
+  if(S.unidades.length>1){
+    html+='<div class="seg">';
+    S.unidades.forEach(u=>{
+      html+='<div class="seg-btn'+(S.mUnidade===u?' on':'')+'" onclick="setMUnidade(\''+u+'\')">'+u+'</div>';
+    });
+    html+='<div class="seg-btn'+(S.mUnidade==='todas'?' on':'')+'" onclick="setMUnidade(\'todas\')">Consolidado</div>';
+    html+='</div>';
+  }
+
+  /* seletor de ciclo */
+  html+='<div class="seg">'+
+    ['semana','mes','ano'].map(c=>'<div class="seg-btn'+(S.mCiclo===c?' on':'')+
+      '" onclick="setMCiclo(\''+c+'\')">'+
+      (c==='semana'?'Semana':c==='mes'?'Mês':'Ano')+'</div>').join('')+'</div>';
+
+  /* seletor de período */
+  if(S.mCiclo==='mes'||S.mCiclo==='semana'){
+    html+='<div class="field" style="margin-bottom:10px"><select onchange="setMMes(this.value)">';
+    for(let m=1;m<=12;m++)html+='<option value="'+m+'"'+(S.mMes===m?' selected':'')+'>'+nomeMes(m)+' / '+S.mAno+'</option>';
+    html+='</select></div>';
+  }
+  if(S.mCiclo==='semana'){
+    const sems=semanasDoMes(S.mAno,S.mMes);
+    html+='<div class="field" style="margin-bottom:10px"><select onchange="setMSemana(this.value)">';
+    sems.forEach((s,i)=>{
+      html+='<option value="'+i+'"'+(S.mSemana===i?' selected':'')+'>'+
+        ddmm(s.ini)+' a '+ddmm(s.fim)+'</option>';
+    });
+    html+='</select></div>';
+  }
+
+  /* anel de progresso */
+  const R=52,C=2*Math.PI*R;
+  const frac=Math.max(0,Math.min(1,meta>0?realizado/meta:0));
+  const cor=pct>=100?'#1a7a3c':(pct>=70?'#FFD100':'#c0392b');
+  html+='<div class="ring-card">'+
+    '<div class="ring-title">'+p.rotulo+'</div>'+
+    '<div class="ring-sub">'+(S.mUnidade==='todas'?'Consolidado':S.mUnidade)+' &middot; aluno-matéria</div>'+
+    '<div class="ring-wrap"><svg width="132" height="132" viewBox="0 0 132 132">'+
+      '<circle cx="66" cy="66" r="'+R+'" fill="none" stroke="#e8eef8" stroke-width="11"/>'+
+      '<circle cx="66" cy="66" r="'+R+'" fill="none" stroke="'+cor+'" stroke-width="11" '+
+        'stroke-linecap="round" stroke-dasharray="'+C.toFixed(1)+'" '+
+        'stroke-dashoffset="'+(C*(1-frac)).toFixed(1)+'" transform="rotate(-90 66 66)"/>'+
+      '<text x="66" y="62" text-anchor="middle" class="ring-num">'+realizado+'</text>'+
+      '<text x="66" y="80" text-anchor="middle" class="ring-lbl">de '+
+        (Math.round(meta*10)/10)+' &middot; '+Math.round(pct)+'%</text>'+
+    '</svg></div>'+
+    '<div class="ring-foot">'+
+      (meta<=0
+        ? 'Nenhuma meta definida para este período. Toque na engrenagem para configurar.'
+        : 'Faltam <b>'+(Math.round(falta*10)/10)+'</b> &middot; restam <b>'+duRestantes+
+          '</b> dias úteis<br>Ritmo necessário: <b>'+ritmo.toFixed(1)+'/dia</b>'+
+          ' &middot; Projeção: <b>'+projecao+'</b>'+
+          (meta>0?' ('+(projecao-Math.round(meta)>=0?'+':'')+(projecao-Math.round(meta))+')':''))+
+    '</div></div>';
+
+  /* indicadores secundários */
+  html+='<div class="mini-grid">'+
+    '<div class="mini"><div class="mini-l">Novas matrículas</div><div class="mini-v">'+realizado+'</div></div>'+
+    '<div class="mini"><div class="mini-l">Cancelamentos</div><div class="mini-v">'+baixasMat+'</div></div>'+
+    '<div class="mini"><div class="mini-l">Saldo líquido</div><div class="mini-v '+
+      (liquido>0?'pos':liquido<0?'neg':'')+'">'+(liquido>0?'+':'')+liquido+'</div></div>'+
+    '<div class="mini"><div class="mini-l">Alunos distintos</div><div class="mini-v">'+alunos+'</div></div>'+
+    '</div>';
+
+  /* por disciplina */
+  html+='<div class="sec-title">Por disciplina</div>';
+  const porDisc={};DISCIPLINAS.forEach(d=>porDisc[d]=0);
+  mats.forEach(m=>{const d=String(m.disciplina).trim();porDisc[d]=(porDisc[d]||0)+1;});
+  const maxD=Math.max(1,...Object.values(porDisc));
+  Object.keys(porDisc).forEach(d=>{
+    html+='<div class="barrow"><div class="barlbl"><span>'+d+'</span><span>'+porDisc[d]+'</span></div>'+
+      '<div class="bartrack"><div class="barfill" style="width:'+(porDisc[d]/maxD*100)+'%"></div></div></div>';
+  });
+
+  /* por origem */
+  const porOri={};
+  mats.forEach(m=>{const o=String(m.origem||'Não informada').trim()||'Não informada';porOri[o]=(porOri[o]||0)+1;});
+  const chavesOri=Object.keys(porOri).sort((a,b)=>porOri[b]-porOri[a]);
+  if(chavesOri.length){
+    html+='<div class="sec-title">Por origem</div>';
+    const maxO=Math.max(1,...Object.values(porOri));
+    chavesOri.forEach(o=>{
+      html+='<div class="barrow"><div class="barlbl"><span>'+o+'</span><span>'+porOri[o]+'</span></div>'+
+        '<div class="bartrack"><div class="barfill y" style="width:'+(porOri[o]/maxO*100)+'%"></div></div></div>';
+    });
+  }
+
+  /* gráfico anual */
+  html+='<div class="sec-title">Ano '+S.mAno+' — meta x realizado</div>'+graficoAnual();
+
+  /* lista do período */
+  html+='<div class="sec-title">Matrículas do período ('+mats.length+')</div>';
+  if(!mats.length){
+    html+='<div class="loading" style="padding:24px">Nenhuma matrícula neste período.</div>';
+  }else{
+    mats.sort((a,b)=>parseDataObj(b.data_matricula)-parseDataObj(a.data_matricula));
+    mats.forEach(m=>{
+      html+='<div class="mat-card d-'+m.disciplina+'">'+
+        '<span class="mat-x" onclick="removerMatricula(\''+m.id+'\')" title="Remover">&times;</span>'+
+        '<div class="mat-nome">'+m.nome_aluno+'</div>'+
+        '<div class="mat-sub">'+m.disciplina+' &middot; '+formatarData(m.data_matricula)+
+        ' &middot; '+(m.tipo||'Nova')+(m.origem?' &middot; '+m.origem:'')+
+        (S.mUnidade==='todas'?' &middot; '+m.unidade:'')+'</div></div>';
+    });
+  }
+
+  html+='<button class="btn-primary" onclick="navTo(\'nova-matricula\')">+ Nova Matrícula</button>'+
+        '<button class="btn-ghost" onclick="navTo(\'config-metas\')">Configurar metas do ano</button>'+
+        '<div style="height:12px"></div>';
+
+  el.innerHTML=html;
+}
+
+/* gráfico de barras anual (SVG) */
+function graficoAnual(){
+  const W=336,H=150,pad=22,bw=W/12;
+  const metasM=[],realM=[];
+  for(let m=1;m<=12;m++){
+    metasM.push(metaMensalDe(S.mUnidade,S.mAno,m));
+    const p={ini:new Date(S.mAno,m-1,1),fim:new Date(S.mAno,m,0)};
+    realM.push(matriculasDoPeriodo(p).length);
+  }
+  const max=Math.max(1,...metasM,...realM);
+  let bars='';
+  for(let i=0;i<12;i++){
+    const x=i*bw+4;
+    const hm=(metasM[i]/max)*(H-pad-14), hr=(realM[i]/max)*(H-pad-14);
+    bars+='<rect x="'+x+'" y="'+(H-pad-hm)+'" width="'+(bw/2-3)+'" height="'+hm+'" fill="#c9d6ee" rx="2"/>';
+    bars+='<rect x="'+(x+bw/2-2)+'" y="'+(H-pad-hr)+'" width="'+(bw/2-3)+'" height="'+hr+'" fill="#003087" rx="2"/>';
+    bars+='<text x="'+(x+bw/2-2)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9" fill="#5a6a8a">'+MESES_CURTO[i]+'</text>';
+  }
+  return '<div class="anual"><svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+bars+'</svg>'+
+    '<div class="anual-legend">'+
+    '<span><i class="lg" style="background:#c9d6ee"></i>Meta</span>'+
+    '<span><i class="lg" style="background:#003087"></i>Realizado</span></div></div>';
+}
+
+/* ---------- controles ---------- */
+function setMUnidade(u){S.mUnidade=u;
+  document.getElementById('metas-title').textContent='Metas — '+(u==='todas'?'Consolidado':u);
+  renderMetas();}
+function setMCiclo(c){S.mCiclo=c;if(c==='semana')S.mSemana=null;renderMetas();}
+function setMMes(v){S.mMes=parseInt(v,10);S.mSemana=null;renderMetas();}
+function setMSemana(v){S.mSemana=parseInt(v,10);renderMetas();}
+
+/* ---------- nova matrícula ---------- */
+function prepararNovaMatricula(){
+  S.matDiscsSel=[];
+  document.querySelectorAll('#mat-disc-chips .disc-chip').forEach(e=>e.classList.remove('selected'));
+  document.getElementById('m-aluno').value='';
+  document.getElementById('m-data').value=ymd(new Date());
+  document.getElementById('m-tipo').value='Nova';
+  document.getElementById('m-origem').value='';
+  document.getElementById('m-orientador').value=S.usuario||'';
+  document.getElementById('m-obs').value='';
+  document.getElementById('mat-msg').textContent='';
+}
+
+function toggleDiscMat(el,d){
+  el.classList.toggle('selected');
+  if(S.matDiscsSel.includes(d))S.matDiscsSel=S.matDiscsSel.filter(x=>x!==d);
+  else S.matDiscsSel.push(d);
+}
+
+async function salvarMatricula(){
+  const msg=document.getElementById('mat-msg');
+  const dados={
+    nome_aluno:document.getElementById('m-aluno').value.trim(),
+    data_matricula:document.getElementById('m-data').value,
+    disciplinas:S.matDiscsSel.join(', '),
+    tipo:document.getElementById('m-tipo').value,
+    origem:document.getElementById('m-origem').value,
+    orientador:document.getElementById('m-orientador').value.trim(),
+    obs:document.getElementById('m-obs').value.trim()
+  };
+  if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
+  if(!dados.data_matricula){msg.textContent='Informe a data da matrícula.';return;}
+  if(!dados.disciplinas){msg.textContent='Selecione ao menos uma disciplina.';return;}
+
+  const unid=(S.mUnidade==='todas')?S.unidade:S.mUnidade;
+  const btn=document.getElementById('btn-mat-salvar');
+  btn.disabled=true;msg.style.color='var(--kb-muted)';msg.textContent='Salvando...';
+  try{
+    const r=await api({action:'criarMatricula',unidade:unid,
+      dados:JSON.stringify(dados),usuario:S.usuario});
+    if(r.sucesso){
+      msg.style.color='#1a7a3c';msg.textContent=r.mensagem;
+      S.metasCarregado=false;
+      setTimeout(async()=>{await abrirMetas();navTo('metas');},900);
+    }else{msg.style.color='#8b1a1a';msg.textContent=r.mensagem||'Erro ao salvar.';}
+  }catch(e){msg.style.color='#8b1a1a';msg.textContent='Erro de conexão.';}
+  btn.disabled=false;
+}
+
+async function removerMatricula(id){
+  if(!confirm('Remover esta matrícula do cômputo das metas?'))return;
+  try{
+    const r=await api({action:'arquivarMatricula',id,unidade:S.unidade,usuario:S.usuario});
+    if(r.sucesso){S.matriculas=S.matriculas.filter(m=>String(m.id)!==String(id));renderMetas();}
+    else alert(r.mensagem||'Não foi possível remover.');
+  }catch(e){alert('Erro de conexão.');}
+}
+
+/* ---------- configuração de metas ---------- */
+async function abrirConfigMetas(){
+  if(!S.metasCarregado)await carregarDadosMetas();
+  renderConfigMetas();
+}
+
+function renderConfigMetas(){
+  const el=document.getElementById('cfg-content');
+  const unids=S.unidades;
+  document.getElementById('cfg-title').textContent='Metas '+S.mAno;
+
+  let html='<div style="font-size:12px;color:var(--kb-muted);margin-bottom:12px;line-height:1.5">'+
+    'Meta mensal em <b>aluno-matéria</b>. A meta semanal é rateada automaticamente por dias úteis; '+
+    'deixe em branco para usar o rateio.</div>';
+
+  html+='<table class="metas-grid"><thead><tr><th>Mês</th>'+
+    unids.map(u=>'<th>'+u+'</th>').join('')+'</tr></thead><tbody>';
+  for(let m=1;m<=12;m++){
+    html+='<tr><td>'+nomeMes(m)+'</td>';
+    unids.forEach(u=>{
+      const linha=S.metas.find(x=>x.unidade===u&&x.ano===S.mAno&&x.mes===m);
+      const v=linha?linha.meta_mensal:'';
+      html+='<td><input type="number" min="0" step="1" id="cfg-'+u+'-'+m+'" value="'+v+'" '+
+            'oninput="somarConfig()"></td>';
+    });
+    html+='</tr>';
+  }
+  html+='</tbody><tfoot><tr><td>Total do ano</td>'+
+    unids.map(u=>'<td id="cfg-tot-'+u+'">0</td>').join('')+'</tr></tfoot></table>';
+
+  html+='<div id="cfg-msg" style="font-size:13px;min-height:18px;margin-top:10px"></div>'+
+    '<button class="btn-primary" id="btn-cfg-salvar" onclick="salvarConfigMetas()">Salvar metas</button>'+
+    '<div style="height:12px"></div>';
+
+  el.innerHTML=html;
+  somarConfig();
+}
+
+function somarConfig(){
+  S.unidades.forEach(u=>{
+    let t=0;
+    for(let m=1;m<=12;m++){
+      const inp=document.getElementById('cfg-'+u+'-'+m);
+      if(inp)t+=parseInt(inp.value,10)||0;
+    }
+    const cel=document.getElementById('cfg-tot-'+u);
+    if(cel)cel.textContent=t;
+  });
+}
+
+async function salvarConfigMetas(){
+  const msg=document.getElementById('cfg-msg');
+  const btn=document.getElementById('btn-cfg-salvar');
+  const lote=[];
+  S.unidades.forEach(u=>{
+    for(let m=1;m<=12;m++){
+      const inp=document.getElementById('cfg-'+u+'-'+m);
+      if(!inp)continue;
+      lote.push({unidade:u,ano:S.mAno,mes:m,
+        meta_mensal:parseInt(inp.value,10)||0,meta_semanal:''});
+    }
+  });
+  btn.disabled=true;msg.style.color='var(--kb-muted)';msg.textContent='Salvando...';
+  try{
+    const r=await api({action:'salvarMeta',unidade:'todas',lote:JSON.stringify(lote)});
+    if(r.sucesso){
+      msg.style.color='#1a7a3c';msg.textContent=r.mensagem;
+      const rt=await api({action:'listarMetas',unidade:'todas',ano:S.mAno});
+      if(rt&&rt.sucesso)S.metas=rt.registros;
+      setTimeout(()=>{navTo('metas');},900);
+    }else{msg.style.color='#8b1a1a';msg.textContent=r.mensagem||'Erro ao salvar.';}
+  }catch(e){msg.style.color='#8b1a1a';msg.textContent='Erro de conexão.';}
+  btn.disabled=false;
+}
+
+/* ---------- PDF de metas ---------- */
+async function carregarJsPDF(){
+  if(window.jspdf)return;
+  await Promise.all([
+    new Promise((res,rej)=>{const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload=res;s.onerror=rej;document.head.appendChild(s);}),
+    new Promise((res,rej)=>{const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js';
+      s.onload=res;s.onerror=rej;document.head.appendChild(s);})
+  ]);
+}
+
+async function exportarPDFMetas(){
+  await carregarJsPDF();
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+
+  const p=periodoAtual();
+  const meta=metaDoPeriodo(p);
+  const mats=matriculasDoPeriodo(p);
+  const baixasMat=contarMaterias(baixasDoPeriodo(p));
+  const liquido=mats.length-baixasMat;
+  const pct=meta>0?Math.round(mats.length/meta*100):0;
+  const unidLabel=S.mUnidade==='todas'?'Consolidado':S.mUnidade;
+  const geradoEm=new Date().toLocaleString('pt-BR',{timeZone:'America/Rio_Branco'});
+
+  doc.setFillColor(0,48,135);doc.rect(0,0,210,26,'F');
+  doc.setTextColor(255);doc.setFontSize(15);doc.setFont(undefined,'bold');
+  doc.text('Metas de Novas Matrículas',14,12);
+  doc.setFontSize(9);doc.setFont(undefined,'normal');
+  doc.text(unidLabel+'  |  '+p.rotulo,14,19);
+
+  doc.setTextColor(40);doc.setFontSize(10);
+  let y=38;
+  const linhas=[
+    ['Meta do período (aluno-matéria)',String(Math.round(meta*10)/10)],
+    ['Realizado',String(mats.length)],
+    ['Atingimento',pct+'%'],
+    ['Cancelamentos no período',String(baixasMat)],
+    ['Saldo líquido',(liquido>0?'+':'')+liquido],
+    ['Alunos distintos',String(new Set(mats.map(m=>String(m.nome_aluno).trim().toLowerCase())).size)]
+  ];
+  doc.autoTable({
+    startY:y,head:[['Indicador','Valor']],body:linhas,
+    headStyles:{fillColor:[0,48,135],textColor:255,fontSize:9,fontStyle:'bold'},
+    bodyStyles:{fontSize:9,textColor:[40,40,40]},
+    alternateRowStyles:{fillColor:[245,247,250]},
+    columnStyles:{0:{cellWidth:120},1:{cellWidth:40,halign:'right'}},
+    margin:{left:14,right:14}
+  });
+
+  const corpo=mats
+    .sort((a,b)=>parseDataObj(a.data_matricula)-parseDataObj(b.data_matricula))
+    .map(m=>[formatarData(m.data_matricula),m.nome_aluno,m.disciplina,
+             m.tipo||'Nova',m.origem||'-',m.unidade]);
+
+  doc.autoTable({
+    startY:doc.lastAutoTable.finalY+8,
+    head:[['Data','Aluno','Disciplina','Tipo','Origem','Unidade']],
+    body:corpo.length?corpo:[['—','Nenhuma matrícula no período','','','','']],
+    headStyles:{fillColor:[0,48,135],textColor:255,fontSize:8,fontStyle:'bold'},
+    bodyStyles:{fontSize:8,textColor:[40,40,40]},
+    alternateRowStyles:{fillColor:[245,247,250]},
+    columnStyles:{0:{cellWidth:20},1:{cellWidth:52},2:{cellWidth:26},
+                  3:{cellWidth:28},4:{cellWidth:32},5:{cellWidth:24}},
+    margin:{left:14,right:14},
+    didDrawPage:(data)=>{
+      const t=doc.getNumberOfPages();
+      doc.setFontSize(8);doc.setTextColor(150);
+      doc.text('KumonBaixa — '+geradoEm+'   |   Página '+data.pageNumber+' de '+t,
+        105,292,{align:'center'});
+    }
+  });
+
+  doc.save('metas_'+unidLabel+'_'+p.rotulo.replace(/[\/\s]+/g,'_')+'.pdf');
+}
+
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
@@ -170,6 +749,7 @@
       <button class="nav-btn active" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
       <button class="nav-btn" onclick="navTo('novo')"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
       <button class="nav-btn" onclick="navTo('alertas')"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('metas')"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
     </div>
   </div>
 
@@ -231,6 +811,7 @@
       <button class="nav-btn" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
       <button class="nav-btn active"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
       <button class="nav-btn" onclick="navTo('alertas')"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('metas')"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
     </div>
   </div>
 
@@ -247,6 +828,7 @@
       <button class="nav-btn" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
       <button class="nav-btn" onclick="navTo('novo')"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
       <button class="nav-btn active"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('metas')"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
     </div>
   </div>
 
@@ -303,9 +885,13 @@ const API='https://script.google.com/macros/s/AKfycbwFoftUZ5JBjp38GsI1j2jAfyRY94
     return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
   }catch(e){return v;}
 }
-let S={unidade:'Centro',usuario:'',contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento'};
+let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],matDiscsSel:[],metasCarregado:false};
 
-async function api(p){const r=await fetch(API+'?'+new URLSearchParams(p));return r.json();}
+async function api(p){
+  if(S.senha && !p.senha) p={...p,senha:S.senha};
+  const r=await fetch(API+'?'+new URLSearchParams(p));
+  return r.json();
+}
 
 function selUnit(u){S.unidade=u;}
 
@@ -320,16 +906,20 @@ async function doLogin(){
     const r=await api({action:'autenticar',unidade:S.unidade,senha:pass});
     if(r.sucesso){
       S.usuario=user;
+      S.senha=pass;
+      S.unidades=(r.unidades&&r.unidades.length)?r.unidades:[S.unidade];
+      S.mUnidade=S.unidade;
+      S.metasCarregado=false;
       document.getElementById('home-title').textContent='Unidade '+S.unidade;
       document.getElementById('home-sub').textContent='Olá, '+user;
       showScreen('home');carregarHome();
-    }else msg.textContent='Senha incorreta.';
+    }else msg.textContent=r.mensagem||'Senha incorreta.';
   }catch(e){msg.textContent='Erro de conexão.';}
   document.getElementById('btn-login').disabled=false;
 }
 
 function doLogout(){
-  S.usuario='';S.contratos=[];S.filtro='todos';S.filtroMes='todos';
+  S.usuario='';S.senha='';S.unidades=['Centro'];S.contratos=[];S.matriculas=[];S.metas=[];S.metasCarregado=false;S.filtro='todos';S.filtroMes='todos';
   document.getElementById('login-pass').value='';
   document.getElementById('login-msg').textContent='';
   showScreen('login');
@@ -679,7 +1269,7 @@ data_baixa:document.getElementById('f-baixa').value
 }
 
 function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+n).classList.add('active');}
-function navTo(n){showScreen(n);if(n==='alertas')carregarAlertas();if(n==='home')renderHome();}
+function navTo(n){showScreen(n);if(n==='alertas')carregarAlertas();if(n==='home')renderHome();if(n==='metas')abrirMetas();if(n==='config-metas')abrirConfigMetas();if(n==='nova-matricula')prepararNovaMatricula();}
   function abrirCalculadora(){
   const contrat=document.getElementById('f-contrat').value;
   const solic=document.getElementById('f-solic').value;
@@ -864,5 +1454,79 @@ c.data_baixa?new Date(c.data_baixa).toLocaleDateString('pt-BR',{timeZone:'Americ
   doc.save(nome);
 }
 </script>
+
+  <!-- ================= TELA: METAS ================= -->
+  <div class="screen" id="screen-metas">
+    <div class="topbar">
+      <div class="topbar-title" id="metas-title">Metas</div>
+      <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;</button>
+      <button class="topbar-btn" onclick="exportarPDFMetas()" title="Exportar PDF">&#8681;</button>
+    </div>
+    <div class="content" id="metas-content">
+      <div class="loading">Carregando metas...</div>
+    </div>
+    <div class="bottomnav">
+      <button class="nav-btn" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('novo')"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('alertas')"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
+      <button class="nav-btn active"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: NOVA MATRÍCULA ================= -->
+  <div class="screen" id="screen-nova-matricula">
+    <div class="topbar">
+      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
+      <div class="topbar-title">Nova Matrícula</div>
+    </div>
+    <div class="content">
+      <div class="field"><label>Nome do Aluno</label>
+        <input type="text" id="m-aluno" placeholder="Nome completo"></div>
+      <div class="field"><label>Data da Matrícula</label>
+        <input type="date" id="m-data"></div>
+      <div class="field"><label>Disciplina(s)</label>
+        <div class="disc-chips" id="mat-disc-chips">
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Matemática')">Matemática</div>
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Português')">Português</div>
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Inglês')">Inglês</div>
+        </div>
+        <div style="font-size:11px;color:var(--kb-muted);margin-top:6px">Cada disciplina conta como 1 unidade na meta.</div>
+      </div>
+      <div class="field"><label>Tipo</label>
+        <select id="m-tipo">
+          <option>Nova</option>
+          <option>Reingresso</option>
+          <option>Adição de matéria</option>
+        </select></div>
+      <div class="field"><label>Origem</label>
+        <select id="m-origem">
+          <option value="">Selecione...</option>
+          <option>Indicação</option>
+          <option>Redes sociais</option>
+          <option>Passagem</option>
+          <option>Evento</option>
+          <option>Ex-aluno</option>
+          <option>Outro</option>
+        </select></div>
+      <div class="field"><label>Orientador</label>
+        <input type="text" id="m-orientador" placeholder="Quem captou"></div>
+      <div class="field"><label>Observações</label>
+        <textarea id="m-obs" rows="2"></textarea></div>
+      <div id="mat-msg" style="font-size:13px;color:#8b1a1a;min-height:18px;margin-top:6px"></div>
+      <button class="btn-primary" id="btn-mat-salvar" onclick="salvarMatricula()">Salvar Matrícula</button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: CONFIGURAR METAS ================= -->
+  <div class="screen" id="screen-config-metas">
+    <div class="topbar">
+      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
+      <div class="topbar-title" id="cfg-title">Configurar Metas</div>
+    </div>
+    <div class="content" id="cfg-content">
+      <div class="loading">Carregando...</div>
+    </div>
+  </div>
+
 </body>
 </html>
