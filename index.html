@@ -68,7 +68,10 @@
     .metas-grid td:first-child{text-align:left;color:var(--kb-muted);font-size:12px}
     .metas-grid input{width:100%;max-width:66px;padding:6px 4px;font-size:13px;text-align:center;border:0.5px solid var(--kb-border);border-radius:6px;-webkit-appearance:none}
     .metas-grid tfoot td{background:var(--kb-blue-light);font-weight:700;color:var(--kb-blue)}
-    .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1}
+    .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1;display:inline-flex;align-items:center;gap:5px}
+    .topbar-btn-lbl{font-size:12px;font-weight:600;letter-spacing:.01em}
+    .btn-cta{margin-top:10px;padding:11px 18px;background:var(--kb-yellow);color:#4a3b00;border:none;border-radius:var(--kb-radius-sm);font-size:14px;font-weight:700;cursor:pointer}
+    .btn-cta:active{background:var(--kb-yellow-dark);color:#fff}
     .btn-ghost{width:100%;padding:11px;background:#fff;color:var(--kb-blue);border:0.5px solid var(--kb-blue);border-radius:var(--kb-radius-sm);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
     .badge-status{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600}
     .st-revertido{background:#e8eef8;color:#003087}
@@ -1145,7 +1148,8 @@ function renderMetas(){
     '</svg></div>'+
     '<div class="ring-foot">'+
       (meta<=0
-        ? 'Nenhuma meta definida para este período. Toque na engrenagem para configurar.'
+        ? 'Nenhuma meta definida para este período.<br>'+
+          '<button class="btn-cta" onclick="navTo(\'config-metas\')">Definir metas de '+S.mAno+'</button>'
         : 'Faltam <b>'+(Math.round(falta*10)/10)+'</b> &middot; restam <b>'+duRestantes+
           '</b> dias úteis<br>Ritmo necessário: <b>'+ritmo.toFixed(1)+'/dia</b>'+
           ' &middot; Projeção: <b>'+projecao+'</b>'+
@@ -1204,7 +1208,7 @@ function renderMetas(){
   }
 
   html+='<button class="btn-primary" onclick="navTo(\'nova-matricula\')">+ Nova Matrícula</button>'+
-        '<button class="btn-ghost" onclick="navTo(\'config-metas\')">Configurar metas do ano</button>'+
+        '<button class="btn-ghost" onclick="navTo(\'config-metas\')">&#9881; Configurar metas de '+S.mAno+'</button>'+
         '<div style="height:12px"></div>';
 
   el.innerHTML=html;
@@ -1459,7 +1463,7 @@ async function exportarPDFMetas(){
   <div class="screen" id="screen-metas">
     <div class="topbar">
       <div class="topbar-title" id="metas-title">Metas</div>
-      <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;</button>
+      <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;<span class="topbar-btn-lbl">Configurar</span></button>
       <button class="topbar-btn" onclick="exportarPDFMetas()" title="Exportar PDF">&#8681;</button>
     </div>
     <div class="content" id="metas-content">
