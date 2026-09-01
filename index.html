@@ -70,6 +70,16 @@
     .metas-grid tfoot td{background:var(--kb-blue-light);font-weight:700;color:var(--kb-blue)}
     .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1;display:inline-flex;align-items:center;gap:5px}
     .topbar-btn-lbl{font-size:12px;font-weight:600;letter-spacing:.01em}
+    .flag-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--kb-border)}
+    .flag-row:last-child{border-bottom:none}
+    .flag-lbl{font-size:13px;color:var(--kb-text);flex:1}
+    .flag-btns{display:flex;gap:6px;flex-shrink:0}
+    .flag-btn{padding:6px 16px;font-size:12px;font-weight:600;border:0.5px solid var(--kb-border);background:#fff;color:var(--kb-muted);border-radius:999px;cursor:pointer}
+    .flag-btn.on{background:#1a7a3c;color:#fff;border-color:#1a7a3c}
+    .flag-btn.no{background:#8b1a1a;color:#fff;border-color:#8b1a1a}
+    .flag-box{background:#fff;border:0.5px solid var(--kb-border);border-radius:var(--kb-radius-sm);padding:4px 12px}
+    .pend{display:inline-block;background:#fff4cc;color:#7a5c00;border:0.5px solid #e8c95a;border-radius:4px;font-size:10px;font-weight:700;padding:2px 6px;margin-top:5px;margin-right:4px}
+    .tag-kc{display:inline-block;background:var(--kb-blue-light);color:var(--kb-blue);border-radius:4px;font-size:10px;font-weight:700;padding:2px 6px;margin-top:5px}
     .btn-cta{margin-top:10px;padding:11px 18px;background:var(--kb-yellow);color:#4a3b00;border:none;border-radius:var(--kb-radius-sm);font-size:14px;font-weight:700;cursor:pointer}
     .btn-cta:active{background:var(--kb-yellow-dark);color:#fff}
     .btn-ghost{width:100%;padding:11px;background:#fff;color:var(--kb-blue);border:0.5px solid var(--kb-blue);border-radius:var(--kb-radius-sm);font-size:14px;font-weight:600;cursor:pointer;margin-top:8px}
@@ -342,7 +352,7 @@
 
 </div>
 <script>
-const API='https://script.google.com/macros/s/AKfycbzn3IS7UK3xZDcO6P67Z75VdtrCXimqAJ29OohaLyNz59QPYvCfEVKoI9Pqctv5uUZc/exec';
+const API='https://script.google.com/macros/s/AKfycbyY9VCCpcJa7gTgrvAXoXI8_rnhDHi6joIUAFBfFFib4Tu5iN32niujGMseIPwyZBjw/exec';
   function formatarData(v){
   if(!v)return'-';
   try{
@@ -354,7 +364,7 @@ const API='https://script.google.com/macros/s/AKfycbzn3IS7UK3xZDcO6P67Z75VdtrCXi
     return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
   }catch(e){return v;}
 }
-let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],matDiscsSel:[],metasCarregado:false};
+let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false};
 
 async function api(p){
   if(S.senha && !p.senha) p={...p,senha:S.senha};
@@ -1213,7 +1223,10 @@ function renderMetas(){
         '<div class="mat-nome">'+m.nome_aluno+'</div>'+
         '<div class="mat-sub">'+m.disciplina+' &middot; '+formatarData(m.data_matricula)+
         ' &middot; '+(m.tipo||'Nova')+(m.origem?' &middot; '+m.origem:'')+
-        (S.mUnidade==='todas'?' &middot; '+m.unidade:'')+'</div></div>';
+        (S.mUnidade==='todas'?' &middot; '+m.unidade:'')+
+        (m.nome_responsavel?'<br>Resp.: '+m.nome_responsavel:'')+
+        (m.ponto_partida?' &middot; Partida: '+m.ponto_partida:'')+
+        '</div>'+selosMatricula(m)+'</div>';
     });
   }
 
@@ -1222,6 +1235,18 @@ function renderMetas(){
         '<div style="height:12px"></div>';
 
   el.innerHTML=html;
+}
+
+/* Selos de pendencia no cartao da matricula */
+function selosMatricula(m){
+  const pend=[];
+  if(m.contrato_ok!=='SIM')      pend.push('Contrato');
+  if(m.pagamento_ok!=='SIM')     pend.push('Pagamento');
+  if(m.liberacao_imagem!=='SIM') pend.push('Imagem');
+  let h='';
+  pend.forEach(p=>{h+='<span class="pend">'+p+' pendente</span>';});
+  if(m.kumon_connect==='SIM')h+='<span class="tag-kc">Kumon Connect</span>';
+  return h;
 }
 
 /* gráfico de barras anual (SVG) */
@@ -1257,9 +1282,23 @@ function setMMes(v){S.mMes=parseInt(v,10);S.mSemana=null;renderMetas();}
 function setMSemana(v){S.mSemana=parseInt(v,10);renderMetas();}
 
 /* ---------- nova matrícula ---------- */
+function setFlag(el,campo,valor){
+  const grupo=el.parentElement;
+  const jaEra=S.matFlags[campo]===valor;
+  grupo.querySelectorAll('.flag-btn').forEach(b=>b.classList.remove('on','no'));
+  if(jaEra){S.matFlags[campo]='';return;}
+  S.matFlags[campo]=valor;
+  el.classList.add(valor==='SIM'?'on':'no');
+}
+
 function prepararNovaMatricula(){
   S.matDiscsSel=[];
+  S.matFlags={contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''};
   document.querySelectorAll('#mat-disc-chips .disc-chip').forEach(e=>e.classList.remove('selected'));
+  document.querySelectorAll('.flag-btn').forEach(b=>b.classList.remove('on','no'));
+  document.getElementById('m-resp').value='';
+  document.getElementById('m-inicio').value='';
+  document.getElementById('m-partida').value='';
   document.getElementById('m-aluno').value='';
   document.getElementById('m-data').value=ymd(new Date());
   document.getElementById('m-tipo').value='Nova';
@@ -1284,7 +1323,14 @@ async function salvarMatricula(){
     tipo:document.getElementById('m-tipo').value,
     origem:document.getElementById('m-origem').value,
     orientador:document.getElementById('m-orientador').value.trim(),
-    obs:document.getElementById('m-obs').value.trim()
+    obs:document.getElementById('m-obs').value.trim(),
+    nome_responsavel:document.getElementById('m-resp').value.trim(),
+    data_inicio:document.getElementById('m-inicio').value||document.getElementById('m-data').value,
+    ponto_partida:document.getElementById('m-partida').value.trim(),
+    contrato_ok:S.matFlags.contrato_ok,
+    pagamento_ok:S.matFlags.pagamento_ok,
+    liberacao_imagem:S.matFlags.liberacao_imagem,
+    kumon_connect:S.matFlags.kumon_connect
   };
   if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
   if(!dados.data_matricula){msg.textContent='Informe a data da matrícula.';return;}
@@ -1496,8 +1542,14 @@ async function exportarPDFMetas(){
     <div class="content">
       <div class="field"><label>Nome do Aluno</label>
         <input type="text" id="m-aluno" placeholder="Nome completo"></div>
+      <div class="field"><label>Nome do Responsável</label>
+        <input type="text" id="m-resp" placeholder="Nome completo"></div>
       <div class="field"><label>Data da Matrícula</label>
         <input type="date" id="m-data"></div>
+      <div class="field"><label>Data de Início</label>
+        <input type="date" id="m-inicio">
+        <div style="font-size:11px;color:var(--kb-muted);margin-top:5px">Deixe em branco se for a mesma data da matrícula.</div>
+      </div>
       <div class="field"><label>Disciplina(s)</label>
         <div class="disc-chips" id="mat-disc-chips">
           <div class="disc-chip" onclick="toggleDiscMat(this,'Matemática')">Matemática</div>
@@ -1522,8 +1574,26 @@ async function exportarPDFMetas(){
           <option>Ex-aluno</option>
           <option>Outro</option>
         </select></div>
+      <div class="field"><label>Ponto de Partida</label>
+        <input type="text" id="m-partida" placeholder="Ex.: ALFABETIZAÇÃO, A-1, 4A"></div>
       <div class="field"><label>Orientador</label>
         <input type="text" id="m-orientador" placeholder="Quem captou"></div>
+      <div class="field"><label>Checklist</label>
+        <div class="flag-box">
+          <div class="flag-row"><span class="flag-lbl">Contrato Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Pagamento Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Liberação de imagem Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Aluno Kumon Connect?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','NÃO')">Não</button></div></div>
+        </div>
+      </div>
       <div class="field"><label>Observações</label>
         <textarea id="m-obs" rows="2"></textarea></div>
       <div id="mat-msg" style="font-size:13px;color:#8b1a1a;min-height:18px;margin-top:6px"></div>
