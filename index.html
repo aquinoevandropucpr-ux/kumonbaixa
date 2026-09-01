@@ -206,6 +206,17 @@
         <div class="field"><label>Senha</label><input type="password" id="login-pass" placeholder="Senha da unidade" autocomplete="current-password"></div>
         <div class="msg-err" id="login-msg"></div>
         <button class="btn-primary" id="btn-login" onclick="doLogin()">Entrar</button>
+      <div style="text-align:center;margin-top:16px">
+        <span onclick="toggleApiCfg()" style="font-size:12px;color:var(--kb-muted);cursor:pointer;text-decoration:underline">Configurar conexão</span>
+      </div>
+      <div id="api-cfg" style="display:none;margin-top:12px;padding-top:12px;border-top:0.5px solid var(--kb-border)">
+        <div class="field"><label>URL do Apps Script</label>
+          <input type="text" id="api-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
+        <button class="btn-ghost" onclick="testarApi()">Testar conexão</button>
+        <button class="btn-ghost" onclick="salvarApi()">Salvar URL</button>
+        <button class="btn-ghost" onclick="restaurarApi()">Restaurar padrão</button>
+        <div id="api-msg" style="font-size:12px;margin-top:8px;line-height:1.5"></div>
+      </div>
       </div>
     </div>
   </div>
@@ -352,7 +363,54 @@
 
 </div>
 <script>
-const API='https://script.google.com/macros/s/AKfycbyY9VCCpcJa7gTgrvAXoXI8_rnhDHi6joIUAFBfFFib4Tu5iN32niujGMseIPwyZBjw/exec';
+const API_PADRAO='https://script.google.com/macros/s/AKfycbyY9VCCpcJa7gTgrvAXoXI8_rnhDHi6joIUAFBfFFib4Tu5iN32niujGMseIPwyZBjw/exec';
+let API=(function(){try{return localStorage.getItem('kb_api')||API_PADRAO;}catch(e){return API_PADRAO;}})();
+
+function toggleApiCfg(){
+  const d=document.getElementById('api-cfg');
+  const abrindo=d.style.display==='none';
+  d.style.display=abrindo?'block':'none';
+  if(abrindo)document.getElementById('api-url').value=API;
+}
+function salvarApi(){
+  const v=document.getElementById('api-url').value.trim();
+  const msg=document.getElementById('api-msg');
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(v)){
+    msg.style.color='#8b1a1a';
+    msg.textContent='URL inválida. Precisa começar com https://script.google.com/macros/s/ e terminar em /exec';
+    return;
+  }
+  try{localStorage.setItem('kb_api',v);}catch(e){}
+  API=v;
+  msg.style.color='#1a7a3c';
+  msg.textContent='URL salva neste navegador. Use "Testar conexão".';
+}
+function restaurarApi(){
+  try{localStorage.removeItem('kb_api');}catch(e){}
+  API=API_PADRAO;
+  document.getElementById('api-url').value=API;
+  const msg=document.getElementById('api-msg');
+  msg.style.color='var(--kb-muted)';
+  msg.textContent='Voltou para a URL original do arquivo.';
+}
+async function testarApi(){
+  const msg=document.getElementById('api-msg');
+  msg.style.color='var(--kb-muted)';msg.textContent='Testando...';
+  try{
+    const r=await fetch(API+'?action=versao');
+    const j=await r.json();
+    if(j&&j.versao){
+      msg.style.color='#1a7a3c';
+      msg.textContent='Conectado — backend v'+j.versao+(j.modulo_metas?' (com módulo de metas)':'');
+    }else{
+      msg.style.color='#b8860b';
+      msg.textContent='Respondeu, mas é código antigo. Publique o Codigo.gs novo nesta implantação.';
+    }
+  }catch(e){
+    msg.style.color='#8b1a1a';
+    msg.textContent='Não respondeu. Confira se a URL existe e se "Quem pode acessar" está em Qualquer pessoa.';
+  }
+}
   function formatarData(v){
   if(!v)return'-';
   try{
@@ -393,7 +451,9 @@ async function doLogin(){
       document.getElementById('home-sub').textContent='Olá, '+user;
       showScreen('home');carregarHome();
     }else msg.textContent=r.mensagem||'Senha incorreta.';
-  }catch(e){msg.textContent='Erro de conexão.';}
+  }catch(e){
+    msg.textContent='Erro de conexão. Toque em "Configurar conexão" abaixo e use "Testar conexão".';
+  }
   document.getElementById('btn-login').disabled=false;
 }
 
