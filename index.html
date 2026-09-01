@@ -346,7 +346,11 @@ const API='https://script.google.com/macros/s/AKfycbwFoftUZ5JBjp38GsI1j2jAfyRY94
   function formatarData(v){
   if(!v)return'-';
   try{
-    if(String(v).includes('/')){const[d,m,y]=String(v).split('/');return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});}
+    const s=String(v).trim();
+    if(s===''||s==='-')return'-';
+    if(s.includes('/')){const[d,m,y]=s.split('/');return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});}
+    const iso=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(iso)return iso[3]+'/'+iso[2]+'/'+iso[1];
     return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
   }catch(e){return v;}
 }
@@ -424,8 +428,14 @@ function mesesDisponiveis(c){
 const MESES_EXT=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 function parseDataObj(v){
   if(!v)return null;
-  const s=String(v);
+  const s=String(v).trim();
+  if(s===''||s==='-')return null;
   if(s.includes('/')){const[d,m,y]=s.split('/');return new Date(+y,+m-1,+d);}
+  // yyyy-MM-dd sem hora precisa virar meia-noite LOCAL.
+  // new Date('2026-09-01') e meia-noite em UTC, o que no Acre (UTC-5)
+  // cai em 31/08 as 19h e joga o registro para o mes anterior.
+  const iso=s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(iso)return new Date(+iso[1],+iso[2]-1,+iso[3]);
   const dt=new Date(s);return isNaN(dt.getTime())?null:dt;
 }
 function rotuloGrupo(dt){
