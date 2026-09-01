@@ -361,7 +361,106 @@
     </div>
   </div>
 
-</div>
+
+  <!-- ================= TELA: METAS ================= -->
+  <div class="screen" id="screen-metas">
+    <div class="topbar">
+      <div class="topbar-title" id="metas-title">Metas</div>
+      <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;<span class="topbar-btn-lbl">Configurar</span></button>
+      <button class="topbar-btn" onclick="exportarPDFMetas()" title="Exportar PDF">&#8681;</button>
+    </div>
+    <div class="content" id="metas-content">
+      <div class="loading">Carregando metas...</div>
+    </div>
+    <div class="bottomnav">
+      <button class="nav-btn" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('novo')"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
+      <button class="nav-btn" onclick="navTo('alertas')"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
+      <button class="nav-btn active"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: NOVA MATRÍCULA ================= -->
+  <div class="screen" id="screen-nova-matricula">
+    <div class="topbar">
+      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
+      <div class="topbar-title">Nova Matrícula</div>
+    </div>
+    <div class="content">
+      <div class="field"><label>Nome do Aluno</label>
+        <input type="text" id="m-aluno" placeholder="Nome completo"></div>
+      <div class="field"><label>Nome do Responsável</label>
+        <input type="text" id="m-resp" placeholder="Nome completo"></div>
+      <div class="field"><label>Data da Matrícula</label>
+        <input type="date" id="m-data"></div>
+      <div class="field"><label>Data de Início</label>
+        <input type="date" id="m-inicio">
+        <div style="font-size:11px;color:var(--kb-muted);margin-top:5px">Deixe em branco se for a mesma data da matrícula.</div>
+      </div>
+      <div class="field"><label>Disciplina(s)</label>
+        <div class="disc-chips" id="mat-disc-chips">
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Matemática')">Matemática</div>
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Português')">Português</div>
+          <div class="disc-chip" onclick="toggleDiscMat(this,'Inglês')">Inglês</div>
+        </div>
+        <div style="font-size:11px;color:var(--kb-muted);margin-top:6px">Cada disciplina conta como 1 unidade na meta.</div>
+      </div>
+      <div class="field"><label>Tipo</label>
+        <select id="m-tipo">
+          <option>Nova</option>
+          <option>Reingresso</option>
+          <option>Adição de matéria</option>
+        </select></div>
+      <div class="field"><label>Origem</label>
+        <select id="m-origem">
+          <option value="">Selecione...</option>
+          <option>Indicação</option>
+          <option>Redes sociais</option>
+          <option>Passagem</option>
+          <option>Evento</option>
+          <option>Ex-aluno</option>
+          <option>Outro</option>
+        </select></div>
+      <div class="field"><label>Ponto de Partida</label>
+        <input type="text" id="m-partida" placeholder="Ex.: ALFABETIZAÇÃO, A-1, 4A"></div>
+      <div class="field"><label>Orientador</label>
+        <input type="text" id="m-orientador" placeholder="Quem captou"></div>
+      <div class="field"><label>Checklist</label>
+        <div class="flag-box">
+          <div class="flag-row"><span class="flag-lbl">Contrato Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Pagamento Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Liberação de imagem Ok?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','NÃO')">Não</button></div></div>
+          <div class="flag-row"><span class="flag-lbl">Aluno Kumon Connect?</span><div class="flag-btns">
+            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','SIM')">Sim</button>
+            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','NÃO')">Não</button></div></div>
+        </div>
+      </div>
+      <div class="field"><label>Observações</label>
+        <textarea id="m-obs" rows="2"></textarea></div>
+      <div id="mat-msg" style="font-size:13px;color:#8b1a1a;min-height:18px;margin-top:6px"></div>
+      <button class="btn-primary" id="btn-mat-salvar" onclick="salvarMatricula()">Salvar Matrícula</button>
+    </div>
+  </div>
+
+  <!-- ================= TELA: CONFIGURAR METAS ================= -->
+  <div class="screen" id="screen-config-metas">
+    <div class="topbar">
+      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
+      <div class="topbar-title" id="cfg-title">Configurar Metas</div>
+    </div>
+    <div class="content" id="cfg-content">
+      <div class="loading">Carregando...</div>
+    </div>
+  </div>
+
+
+  </div>
 <script>
 const API_PADRAO='https://script.google.com/macros/s/AKfycbyY9VCCpcJa7gTgrvAXoXI8_rnhDHi6joIUAFBfFFib4Tu5iN32niujGMseIPwyZBjw/exec';
 let API=(function(){try{return localStorage.getItem('kb_api')||API_PADRAO;}catch(e){return API_PADRAO;}})();
@@ -1574,103 +1673,5 @@ async function exportarPDFMetas(){
 }
 
 </script>
-
-  <!-- ================= TELA: METAS ================= -->
-  <div class="screen" id="screen-metas">
-    <div class="topbar">
-      <div class="topbar-title" id="metas-title">Metas</div>
-      <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;<span class="topbar-btn-lbl">Configurar</span></button>
-      <button class="topbar-btn" onclick="exportarPDFMetas()" title="Exportar PDF">&#8681;</button>
-    </div>
-    <div class="content" id="metas-content">
-      <div class="loading">Carregando metas...</div>
-    </div>
-    <div class="bottomnav">
-      <button class="nav-btn" onclick="navTo('home')"><span class="nav-icon">&#9776;</span><span>Contratos</span><div class="nav-bar"></div></button>
-      <button class="nav-btn" onclick="navTo('novo')"><span class="nav-icon">&#43;</span><span>Novo</span><div class="nav-bar"></div></button>
-      <button class="nav-btn" onclick="navTo('alertas')"><span class="nav-icon">&#9888;</span><span class="badge-alerta" id="badge-alerta"></span><span>Alertas</span><div class="nav-bar"></div></button>
-      <button class="nav-btn active"><span class="nav-icon">&#9679;</span><span>Metas</span><div class="nav-bar"></div></button>
-    </div>
-  </div>
-
-  <!-- ================= TELA: NOVA MATRÍCULA ================= -->
-  <div class="screen" id="screen-nova-matricula">
-    <div class="topbar">
-      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
-      <div class="topbar-title">Nova Matrícula</div>
-    </div>
-    <div class="content">
-      <div class="field"><label>Nome do Aluno</label>
-        <input type="text" id="m-aluno" placeholder="Nome completo"></div>
-      <div class="field"><label>Nome do Responsável</label>
-        <input type="text" id="m-resp" placeholder="Nome completo"></div>
-      <div class="field"><label>Data da Matrícula</label>
-        <input type="date" id="m-data"></div>
-      <div class="field"><label>Data de Início</label>
-        <input type="date" id="m-inicio">
-        <div style="font-size:11px;color:var(--kb-muted);margin-top:5px">Deixe em branco se for a mesma data da matrícula.</div>
-      </div>
-      <div class="field"><label>Disciplina(s)</label>
-        <div class="disc-chips" id="mat-disc-chips">
-          <div class="disc-chip" onclick="toggleDiscMat(this,'Matemática')">Matemática</div>
-          <div class="disc-chip" onclick="toggleDiscMat(this,'Português')">Português</div>
-          <div class="disc-chip" onclick="toggleDiscMat(this,'Inglês')">Inglês</div>
-        </div>
-        <div style="font-size:11px;color:var(--kb-muted);margin-top:6px">Cada disciplina conta como 1 unidade na meta.</div>
-      </div>
-      <div class="field"><label>Tipo</label>
-        <select id="m-tipo">
-          <option>Nova</option>
-          <option>Reingresso</option>
-          <option>Adição de matéria</option>
-        </select></div>
-      <div class="field"><label>Origem</label>
-        <select id="m-origem">
-          <option value="">Selecione...</option>
-          <option>Indicação</option>
-          <option>Redes sociais</option>
-          <option>Passagem</option>
-          <option>Evento</option>
-          <option>Ex-aluno</option>
-          <option>Outro</option>
-        </select></div>
-      <div class="field"><label>Ponto de Partida</label>
-        <input type="text" id="m-partida" placeholder="Ex.: ALFABETIZAÇÃO, A-1, 4A"></div>
-      <div class="field"><label>Orientador</label>
-        <input type="text" id="m-orientador" placeholder="Quem captou"></div>
-      <div class="field"><label>Checklist</label>
-        <div class="flag-box">
-          <div class="flag-row"><span class="flag-lbl">Contrato Ok?</span><div class="flag-btns">
-            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','SIM')">Sim</button>
-            <button class="flag-btn" onclick="setFlag(this,'contrato_ok','NÃO')">Não</button></div></div>
-          <div class="flag-row"><span class="flag-lbl">Pagamento Ok?</span><div class="flag-btns">
-            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','SIM')">Sim</button>
-            <button class="flag-btn" onclick="setFlag(this,'pagamento_ok','NÃO')">Não</button></div></div>
-          <div class="flag-row"><span class="flag-lbl">Liberação de imagem Ok?</span><div class="flag-btns">
-            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','SIM')">Sim</button>
-            <button class="flag-btn" onclick="setFlag(this,'liberacao_imagem','NÃO')">Não</button></div></div>
-          <div class="flag-row"><span class="flag-lbl">Aluno Kumon Connect?</span><div class="flag-btns">
-            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','SIM')">Sim</button>
-            <button class="flag-btn" onclick="setFlag(this,'kumon_connect','NÃO')">Não</button></div></div>
-        </div>
-      </div>
-      <div class="field"><label>Observações</label>
-        <textarea id="m-obs" rows="2"></textarea></div>
-      <div id="mat-msg" style="font-size:13px;color:#8b1a1a;min-height:18px;margin-top:6px"></div>
-      <button class="btn-primary" id="btn-mat-salvar" onclick="salvarMatricula()">Salvar Matrícula</button>
-    </div>
-  </div>
-
-  <!-- ================= TELA: CONFIGURAR METAS ================= -->
-  <div class="screen" id="screen-config-metas">
-    <div class="topbar">
-      <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
-      <div class="topbar-title" id="cfg-title">Configurar Metas</div>
-    </div>
-    <div class="content" id="cfg-content">
-      <div class="loading">Carregando...</div>
-    </div>
-  </div>
-
 </body>
 </html>
