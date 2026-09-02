@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="KumonBaixa">
+  <meta name="apple-mobile-web-app-title" content="Gestão de Metas">
   <meta name="theme-color" content="#003087">
-  <title>KumonBaixa</title>
+  <title>KUMON — Gestão de Metas</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     :root{--kb-blue:#003087;--kb-blue-mid:#1a4db3;--kb-blue-light:#e8eef8;--kb-yellow:#FFD100;--kb-yellow-dark:#b89200;--kb-text:#1a1a2e;--kb-muted:#5a6a8a;--kb-border:#d0d9ec;--kb-surface:#f5f7fc;--kb-radius:12px;--kb-radius-sm:8px}
@@ -68,6 +68,18 @@
     .metas-grid td:first-child{text-align:left;color:var(--kb-muted);font-size:12px}
     .metas-grid input{width:100%;max-width:66px;padding:6px 4px;font-size:13px;text-align:center;border:0.5px solid var(--kb-border);border-radius:6px;-webkit-appearance:none}
     .metas-grid tfoot td{background:var(--kb-blue-light);font-weight:700;color:var(--kb-blue)}
+    .marca-top{font-size:10px;font-weight:700;color:var(--kb-yellow);letter-spacing:.2em;line-height:1.2}
+    .hub-card{display:block;width:100%;text-align:left;background:#fff;border:0.5px solid var(--kb-border);border-left:4px solid var(--kb-blue);border-radius:var(--kb-radius);padding:18px 16px;margin-bottom:14px;cursor:pointer;position:relative}
+    .hub-card:active{background:var(--kb-blue-light)}
+    .hub-card.amarelo{border-left-color:var(--kb-yellow)}
+    .hub-ico{font-size:22px;line-height:1;margin-bottom:8px;display:block}
+    .hub-nome{font-size:18px;font-weight:700;color:var(--kb-blue);margin-bottom:3px}
+    .hub-desc{font-size:12.5px;color:var(--kb-muted);line-height:1.5}
+    .hub-num{font-size:12px;color:var(--kb-text);margin-top:10px;font-weight:600}
+    .hub-num .b{color:var(--kb-blue)}
+    .hub-seta{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--kb-muted);font-size:20px}
+    .hub-alerta{display:inline-block;background:#fdecec;color:#8b1a1a;border:0.5px solid #e6b3b3;border-radius:999px;font-size:11px;font-weight:700;padding:2px 9px;margin-top:9px}
+    .btn-inicio{background:rgba(255,255,255,0.15);border:0.5px solid rgba(255,255,255,0.3);border-radius:8px;color:#fff;font-size:15px;padding:4px 10px;cursor:pointer;margin-right:6px;line-height:1.3}
     .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1;display:inline-flex;align-items:center;gap:5px}
     .topbar-btn-lbl{font-size:12px;font-weight:600;letter-spacing:.01em}
     .flag-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--kb-border)}
@@ -137,6 +149,7 @@
     .login-screen-inner{display:flex;flex-direction:column;flex:1;overflow-y:auto}
     .login-header{background:var(--kb-blue);padding:40px 24px 32px;text-align:center;flex-shrink:0}
     .login-logo{width:70px;height:70px;background:var(--kb-yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;font-weight:800;color:var(--kb-blue)}
+    .login-marca{font-size:13px;font-weight:700;color:var(--kb-yellow);letter-spacing:.22em;margin-bottom:2px}
     .login-title{font-size:24px;font-weight:700;color:#fff;margin-bottom:4px}
     .login-sub{font-size:13px;color:rgba(255,255,255,0.7)}
     .login-body{padding:24px;background:#fff;flex:1}
@@ -188,8 +201,8 @@
     <div class="login-screen-inner">
       <div class="login-header">
         <div class="login-logo">K</div>
-        <div class="login-title">KumonBaixa</div>
-        <div class="login-sub">Controle de cancelamentos</div>
+        <div class="login-marca">KUMON</div>
+        <div class="login-title">Gestão de Metas</div>
       </div>
       <div class="login-body">
         <div class="field">
@@ -222,12 +235,26 @@
   </div>
 
   <!-- HOME -->
+  <!-- ================= TELA: INÍCIO (MÓDULOS) ================= -->
+  <div class="screen" id="screen-hub">
+    <div class="topbar">
+      <div style="flex:1">
+        <div class="marca-top">KUMON</div>
+        <div class="topbar-title">Gestão de Metas</div>
+        <div class="topbar-sub" id="hub-sub"></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sair</button>
+    </div>
+    <div class="content" id="hub-content"></div>
+  </div>
+
   <div class="screen" id="screen-home">
     <div class="topbar">
       <div style="flex:1">
-        <div class="topbar-title" id="home-title">KumonBaixa</div>
+        <div class="topbar-title" id="home-title">Baixas</div>
         <div class="topbar-sub" id="home-sub"></div>
       </div>
+      <button class="btn-inicio" onclick="navTo('hub')" title="Início">&#8962;</button>
       <button class="logout-btn" onclick="doLogout()">Sair</button>
     </div>
     <div class="content" id="home-content"><div class="loading">Carregando...</div></div>
@@ -365,7 +392,8 @@
   <!-- ================= TELA: METAS ================= -->
   <div class="screen" id="screen-metas">
     <div class="topbar">
-      <div class="topbar-title" id="metas-title">Metas</div>
+      <div class="topbar-title" id="metas-title" style="flex:1">Metas</div>
+      <button class="btn-inicio" onclick="navTo('hub')" title="Início">&#8962;</button>
       <button class="topbar-btn" onclick="navTo('config-metas')" title="Configurar metas">&#9881;<span class="topbar-btn-lbl">Configurar</span></button>
       <button class="topbar-btn" onclick="exportarPDFMetas()" title="Exportar PDF">&#8681;</button>
     </div>
@@ -546,9 +574,11 @@ async function doLogin(){
       S.unidades=(r.unidades&&r.unidades.length)?r.unidades:[S.unidade];
       S.mUnidade=S.unidade;
       S.metasCarregado=false;
-      document.getElementById('home-title').textContent='Unidade '+S.unidade;
+      document.getElementById('home-title').textContent='Baixas — '+S.unidade;
       document.getElementById('home-sub').textContent='Olá, '+user;
-      showScreen('home');carregarHome();
+      document.getElementById('hub-sub').textContent='Olá, '+user+' · Unidade '+S.unidade;
+      showScreen('hub');renderHub();
+      carregarHome().then(renderHub);
     }else msg.textContent=r.mensagem||'Senha incorreta.';
   }catch(e){
     msg.textContent='Erro de conexão. Toque em "Configurar conexão" abaixo e use "Testar conexão".';
@@ -557,7 +587,7 @@ async function doLogin(){
 }
 
 function doLogout(){
-  S.usuario='';S.senha='';S.unidades=['Centro'];S.contratos=[];S.matriculas=[];S.metas=[];S.metasCarregado=false;S.filtro='todos';S.filtroMes='todos';
+  S.usuario='';S.senha='';S.unidades=['Centro'];S.contratos=[];S.matriculas=[];S.metas=[];S.metasCarregado=false;S.contratosMetas=[];S.filtro='todos';S.filtroMes='todos';
   document.getElementById('login-pass').value='';
   document.getElementById('login-msg').textContent='';
   showScreen('login');
@@ -913,7 +943,7 @@ data_baixa:document.getElementById('f-baixa').value
 }
 
 function showScreen(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+n).classList.add('active');}
-function navTo(n){showScreen(n);if(n==='alertas')carregarAlertas();if(n==='home')renderHome();if(n==='metas')abrirMetas();if(n==='config-metas')abrirConfigMetas();if(n==='nova-matricula')prepararNovaMatricula();}
+function navTo(n){showScreen(n);if(n==='hub')renderHub();if(n==='alertas')carregarAlertas();if(n==='home')renderHome();if(n==='metas')abrirMetas();if(n==='config-metas')abrirConfigMetas();if(n==='nova-matricula')prepararNovaMatricula();}
   function abrirCalculadora(){
   const contrat=document.getElementById('f-contrat').value;
   const solic=document.getElementById('f-solic').value;
@@ -1088,7 +1118,7 @@ c.data_baixa?new Date(c.data_baixa).toLocaleDateString('pt-BR',{timeZone:'Americ
     didDrawPage:(data)=>{
       const pTotal=doc.getNumberOfPages();
       doc.setFontSize(8); doc.setTextColor(150);
-      doc.text('KumonBaixa — '+dataGeracao+'   |   Página '+data.pageNumber+' de '+pTotal,
+      doc.text('KUMON | Gestão de Metas — '+dataGeracao+'   |   Página '+data.pageNumber+' de '+pTotal,
         105,292,{align:'center'});
     }
   });
@@ -1096,6 +1126,57 @@ c.data_baixa?new Date(c.data_baixa).toLocaleDateString('pt-BR',{timeZone:'Americ
   // ── Salvar ─────────────────────────────────────────────
   const nome='baixas_'+unidade+'_'+mesLabel.replace(/\s+/g,'_')+'.pdf';
   doc.save(nome);
+}
+
+/* ============================================================
+   TELA INICIAL — ESCOLHA DE MÓDULO
+   ============================================================ */
+
+function renderHub(){
+  const el=document.getElementById('hub-content');
+  if(!el)return;
+
+  // ---- resumo do modulo de baixas (ja carregado por carregarHome) ----
+  const cs=S.contratos||[];
+  const emCanc=cs.filter(c=>c.status==='Em Cancelamento').length;
+  const alertas=cs.filter(c=>ehAlerta(c)).length;
+
+  // ---- resumo do modulo de matriculas (so se as metas ja foram abertas) ----
+  let linhaMat='<div class="hub-num">Toque para ver metas e lançar matrículas</div>';
+  if(S.metasCarregado){
+    const hoje=new Date();
+    const p={ini:new Date(hoje.getFullYear(),hoje.getMonth(),1),
+             fim:new Date(hoje.getFullYear(),hoje.getMonth()+1,0)};
+    const uAnt=S.mUnidade, cAnt=S.mCiclo, aAnt=S.mAno, mAnt=S.mMes;
+    S.mUnidade=S.unidade; S.mCiclo='mes';
+    S.mAno=hoje.getFullYear(); S.mMes=hoje.getMonth()+1;
+    const feito=matriculasDoPeriodo(p).length;
+    const meta=metaMensalDe(S.unidade,S.mAno,S.mMes);
+    S.mUnidade=uAnt; S.mCiclo=cAnt; S.mAno=aAnt; S.mMes=mAnt;
+    linhaMat='<div class="hub-num"><span class="b">'+feito+'</span> de <span class="b">'+
+      meta+'</span> no mês'+(meta>0?' · '+Math.round(feito/meta*100)+'%':'')+'</div>';
+  }
+
+  el.innerHTML=
+    '<div style="font-size:12px;color:var(--kb-muted);margin-bottom:14px">Escolha o módulo</div>'+
+
+    '<button class="hub-card amarelo" onclick="navTo(\'metas\')">'+
+      '<span class="hub-ico">&#9679;</span>'+
+      '<div class="hub-nome">Matrículas</div>'+
+      '<div class="hub-desc">Metas semanais, mensais e anuais. Cadastro de novas matrículas e acompanhamento por disciplina e origem.</div>'+
+      linhaMat+
+      '<span class="hub-seta">&#8250;</span>'+
+    '</button>'+
+
+    '<button class="hub-card" onclick="navTo(\'home\')">'+
+      '<span class="hub-ico">&#9776;</span>'+
+      '<div class="hub-nome">Baixas</div>'+
+      '<div class="hub-desc">Contratos em cancelamento, reversões, concluintes e controle de multas.</div>'+
+      '<div class="hub-num"><span class="b">'+cs.length+'</span> contratos · <span class="b">'+
+        emCanc+'</span> em cancelamento</div>'+
+      (alertas>0?'<div class="hub-alerta">&#9888; '+alertas+' alerta'+(alertas>1?'s':'')+' +5 dias</div>':'')+
+      '<span class="hub-seta">&#8250;</span>'+
+    '</button>';
 }
 
 /* ============================================================
@@ -1504,7 +1585,7 @@ async function salvarMatricula(){
     if(r.sucesso){
       msg.style.color='#1a7a3c';msg.textContent=r.mensagem;
       S.metasCarregado=false;
-      setTimeout(async()=>{await abrirMetas();navTo('metas');},900);
+      setTimeout(async()=>{await abrirMetas();renderHub();navTo('metas');},900);
     }else{msg.style.color='#8b1a1a';msg.textContent=r.mensagem||'Erro ao salvar.';}
   }catch(e){msg.style.color='#8b1a1a';msg.textContent='Erro de conexão.';}
   btn.disabled=false;
@@ -1664,7 +1745,7 @@ async function exportarPDFMetas(){
     didDrawPage:(data)=>{
       const t=doc.getNumberOfPages();
       doc.setFontSize(8);doc.setTextColor(150);
-      doc.text('KumonBaixa — '+geradoEm+'   |   Página '+data.pageNumber+' de '+t,
+      doc.text('KUMON | Gestão de Metas — '+geradoEm+'   |   Página '+data.pageNumber+' de '+t,
         105,292,{align:'center'});
     }
   });
