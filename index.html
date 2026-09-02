@@ -79,6 +79,8 @@
     .hub-num{font-size:12px;color:var(--kb-text);margin-top:10px;font-weight:600}
     .hub-num .b{color:var(--kb-blue)}
     .hub-seta{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--kb-muted);font-size:20px}
+    .hub-falha{font-size:12px;color:#8b1a1a;margin-top:10px;line-height:1.45}
+    .hub-retry{display:inline-block;margin-top:7px;font-size:12px;font-weight:700;color:var(--kb-blue);text-decoration:underline;cursor:pointer}
     .hub-alerta{display:inline-block;background:#fdecec;color:#8b1a1a;border:0.5px solid #e6b3b3;border-radius:999px;font-size:11px;font-weight:700;padding:2px 9px;margin-top:9px}
     .btn-inicio{background:rgba(255,255,255,0.15);border:0.5px solid rgba(255,255,255,0.3);border-radius:8px;color:#fff;font-size:15px;padding:4px 10px;cursor:pointer;margin-right:6px;line-height:1.3}
     .topbar-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.92);font-size:19px;padding:0 4px;line-height:1;display:inline-flex;align-items:center;gap:5px}
@@ -563,7 +565,7 @@ async function testarApi(){
     return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
   }catch(e){return v;}
 }
-let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false};
+let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],statusBaixas:'',statusMetas:'',matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false};
 
 async function api(p){
   if(S.senha && !p.senha) p={...p,senha:S.senha};
@@ -592,7 +594,8 @@ async function doLogin(){
       document.getElementById('home-sub').textContent='Olá, '+user;
       document.getElementById('hub-sub').textContent='Olá, '+user+' · Unidade '+S.unidade;
       showScreen('hub');renderHub();
-      carregarHome().then(renderHub);
+      carregarHome();
+      carregarDadosMetas();
     }else msg.textContent=r.mensagem||'Senha incorreta.';
   }catch(e){
     msg.textContent='Erro de conexão. Toque em "Configurar conexão" abaixo e use "Testar conexão".';
@@ -609,12 +612,21 @@ function doLogout(){
 
 async function carregarHome(){
   const el=document.getElementById('home-content');
+  S.statusBaixas='carregando';
   el.innerHTML='<div class="loading">Carregando contratos...</div>';
   try{
     const r=await api({action:'listar',unidade:S.unidade});
-    if(r.sucesso){S.contratos=r.registros;renderHome();}
-    else el.innerHTML='<div class="empty">Erro ao carregar.</div>';
-  }catch(e){el.innerHTML='<div class="empty">Sem conexão.</div>';}
+    if(r.sucesso){
+      S.contratos=r.registros;S.statusBaixas='ok';renderHome();
+    }else{
+      S.statusBaixas=r.mensagem||'Erro ao carregar.';
+      el.innerHTML='<div class="empty">'+S.statusBaixas+'</div>';
+    }
+  }catch(e){
+    S.statusBaixas='Sem conexão com o servidor.';
+    el.innerHTML='<div class="empty">'+S.statusBaixas+'</div>';
+  }
+  renderHub();
 }
 
 function extrairMesAno(d){
@@ -1157,7 +1169,11 @@ function renderHub(){
 
   // ---- resumo do modulo de matriculas (so se as metas ja foram abertas) ----
   let linhaMat='<div class="hub-num">Toque para ver metas e lançar matrículas</div>';
-  if(S.metasCarregado){
+  if(S.statusMetas==='carregando')linhaMat='<div class="hub-num" style="color:var(--kb-muted)">Carregando...</div>';
+  else if(S.statusMetas&&S.statusMetas!=='ok')
+    linhaMat='<div class="hub-falha">'+S.statusMetas+'</div>'+
+      '<span class="hub-retry" onclick="event.stopPropagation();recarregarMetas()">Tentar novamente</span>';
+  else if(S.metasCarregado){
     const hoje=new Date();
     const p={ini:new Date(hoje.getFullYear(),hoje.getMonth(),1),
              fim:new Date(hoje.getFullYear(),hoje.getMonth()+1,0)};
@@ -1186,9 +1202,14 @@ function renderHub(){
       '<span class="hub-ico"><svg viewBox="0 0 34 34" width="30" height="30" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.2" y="6.2" width="16.6" height="22.6" rx="3" stroke="#003087" stroke-width="2.4"/><rect x="7.8" y="3" width="7.4" height="5.2" rx="1.6" fill="#003087"/><path d="M7.4 15.5 H15.6 M7.4 20.5 H12.6" stroke="#003087" stroke-width="2.2" stroke-linecap="round"/><path d="M21.6 17.5 H31 M27.4 13.9 L31 17.5 L27.4 21.1" stroke="#8B1A1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
       '<div class="hub-nome">Baixas</div>'+
       '<div class="hub-desc">Contratos em cancelamento, reversões, concluintes e controle de multas.</div>'+
-      '<div class="hub-num"><span class="b">'+cs.length+'</span> contratos · <span class="b">'+
-        emCanc+'</span> em cancelamento</div>'+
-      (alertas>0?'<div class="hub-alerta">&#9888; '+alertas+' alerta'+(alertas>1?'s':'')+' +5 dias</div>':'')+
+      (S.statusBaixas==='carregando'
+        ? '<div class="hub-num" style="color:var(--kb-muted)">Carregando...</div>'
+        : (S.statusBaixas&&S.statusBaixas!=='ok'
+          ? '<div class="hub-falha">'+S.statusBaixas+'</div>'+
+            '<span class="hub-retry" onclick="event.stopPropagation();recarregarBaixas()">Tentar novamente</span>'
+          : '<div class="hub-num"><span class="b">'+cs.length+'</span> contratos · <span class="b">'+
+            emCanc+'</span> em cancelamento</div>'+
+            (alertas>0?'<div class="hub-alerta">&#9888; '+alertas+' alerta'+(alertas>1?'s':'')+' +5 dias</div>':'')))+
       '<span class="hub-seta">&#8250;</span>'+
     '</button>';
 }
@@ -1322,15 +1343,34 @@ async function abrirMetas(){
     document.getElementById('metas-content').innerHTML='<div class="loading">Carregando metas...</div>';
     await carregarDadosMetas();
   }
+  if(S.statusMetas&&S.statusMetas!=='ok'){
+    document.getElementById('metas-content').innerHTML=
+      '<div class="empty">'+S.statusMetas+
+      '<br><button class="btn-ghost" style="max-width:220px;margin:14px auto 0" '+
+      'onclick="recarregarMetas()">Tentar novamente</button></div>';
+    return;
+  }
   renderMetas();
+}
+
+async function recarregarMetas(){
+  S.metasCarregado=false;S.statusMetas='';
+  document.getElementById('metas-content').innerHTML='<div class="loading">Carregando metas...</div>';
+  await abrirMetas();
+}
+async function recarregarBaixas(){
+  S.statusBaixas='';await carregarHome();
 }
 
 async function carregarDadosMetas(){
   try{
+    S.statusMetas='carregando';
     const [rm,rt]=await Promise.all([
       api({action:'listarMatriculas',unidade:'todas'}),
       api({action:'listarMetas',unidade:'todas',ano:S.mAno})
     ]);
+    if(rm&&!rm.sucesso&&rm.mensagem)throw new Error(rm.mensagem);
+    if(rt&&!rt.sucesso&&rt.mensagem)throw new Error(rt.mensagem);
     S.matriculas=(rm&&rm.sucesso)?rm.registros:[];
     S.metas=(rt&&rt.sucesso)?rt.registros:[];
 
@@ -1343,10 +1383,11 @@ async function carregarDadosMetas(){
       });
     });
     S.metasCarregado=true;
+    S.statusMetas='ok';
   }catch(e){
-    document.getElementById('metas-content').innerHTML=
-      '<div class="loading">Erro ao carregar. Verifique a conexão.</div>';
+    S.statusMetas='Sem conexão com o servidor.';
   }
+  renderHub();
 }
 
 /* ---------- render ---------- */
