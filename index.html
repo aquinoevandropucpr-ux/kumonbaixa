@@ -540,8 +540,7 @@ async function testarApi(){
   const msg=document.getElementById('api-msg');
   msg.style.color='var(--kb-muted)';msg.textContent='Testando...';
   try{
-    const r=await fetch(API+'?action=versao');
-    const j=await r.json();
+    const j=await jsonpRequest(API,{action:'versao'});
     if(j&&j.versao){
       msg.style.color='#1a7a3c';
       msg.textContent='Conectado — backend v'+j.versao+(j.modulo_metas?' (com módulo de metas)':'');
@@ -567,10 +566,36 @@ async function testarApi(){
 }
 let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],statusBaixas:'',statusMetas:'',matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false};
 
+function jsonpRequest(url, params){
+  return new Promise((resolve, reject) => {
+    const cbName = '_kb_cb_' + Date.now() + '_' + Math.floor(Math.random()*100000);
+    const qs = new URLSearchParams({...params, callback: cbName});
+    const script = document.createElement('script');
+    let concluido = false;
+    const limpar = () => {
+      try{ delete window[cbName]; }catch(e){}
+      if(script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timeoutId);
+    };
+    window[cbName] = (data) => {
+      concluido = true;
+      limpar();
+      resolve(data);
+    };
+    script.onerror = () => {
+      if(!concluido){ limpar(); reject(new Error('Falha ao carregar resposta do servidor.')); }
+    };
+    const timeoutId = setTimeout(() => {
+      if(!concluido){ limpar(); reject(new Error('Tempo esgotado aguardando resposta do servidor.')); }
+    }, 20000);
+    script.src = url + '?' + qs.toString();
+    document.head.appendChild(script);
+  });
+}
+
 async function api(p){
   if(S.senha && !p.senha) p={...p,senha:S.senha};
-  const r=await fetch(API+'?'+new URLSearchParams(p));
-  return r.json();
+  return jsonpRequest(API, p);
 }
 
 function selUnit(u){S.unidade=u;}
