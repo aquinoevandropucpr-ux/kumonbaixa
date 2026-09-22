@@ -416,7 +416,7 @@
   <div class="screen" id="screen-nova-matricula">
     <div class="topbar">
       <button class="back-btn" onclick="navTo('metas')">&#8592;</button>
-      <div class="topbar-title">Nova Matrícula</div>
+      <div class="topbar-title" id="nova-mat-title">Nova Matrícula</div>
     </div>
     <div class="content">
       <div class="field"><label>Nome do Aluno</label>
@@ -564,7 +564,7 @@ async function testarApi(){
     return new Date(v).toLocaleDateString('pt-BR',{timeZone:'America/Rio_Branco',day:'2-digit',month:'2-digit',year:'numeric'});
   }catch(e){return v;}
 }
-let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],statusBaixas:'',statusMetas:'',matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false};
+let S={unidade:'Centro',usuario:'',senha:'',unidades:['Centro'],contratos:[],filtro:'todos',filtroMes:'todos',statusSel:'Em Cancelamento',discsSel:[],contratoAtual:null,editDiscsSel:[],editStatusSel:'Em Cancelamento',mUnidade:'Centro',mCiclo:'mes',mAno:new Date().getFullYear(),mMes:new Date().getMonth()+1,mSemana:null,matriculas:[],metas:[],statusBaixas:'',statusMetas:'',matDiscsSel:[],matFlags:{contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''},metasCarregado:false,matEditId:null};
 
 function jsonpRequest(url, params){
   return new Promise((resolve, reject) => {
@@ -1538,8 +1538,8 @@ function renderMetas(){
   }else{
     mats.sort((a,b)=>parseDataObj(b.data_matricula)-parseDataObj(a.data_matricula));
     mats.forEach(m=>{
-      html+='<div class="mat-card d-'+m.disciplina+'">'+
-        '<span class="mat-x" onclick="removerMatricula(\''+m.id+'\')" title="Remover">&times;</span>'+
+      html+='<div class="mat-card d-'+m.disciplina+'" onclick="editarMatricula(\''+m.id+'\')">'+
+        '<span class="mat-x" onclick="event.stopPropagation();removerMatricula(\''+m.id+'\')" title="Remover">&times;</span>'+
         '<div class="mat-nome">'+m.nome_aluno+'</div>'+
         '<div class="mat-sub">'+m.disciplina+' &middot; '+formatarData(m.data_matricula)+
         ' &middot; '+(m.tipo||'Nova')+(m.origem?' &middot; '+m.origem:'')+
@@ -1612,6 +1612,7 @@ function setFlag(el,campo,valor){
 }
 
 function prepararNovaMatricula(){
+  S.matEditId=null;
   S.matDiscsSel=[];
   S.matFlags={contrato_ok:'',pagamento_ok:'',liberacao_imagem:'',kumon_connect:''};
   document.querySelectorAll('#mat-disc-chips .disc-chip').forEach(e=>e.classList.remove('selected'));
@@ -1626,9 +1627,66 @@ function prepararNovaMatricula(){
   document.getElementById('m-orientador').value=S.usuario||'';
   document.getElementById('m-obs').value='';
   document.getElementById('mat-msg').textContent='';
+  document.getElementById('nova-mat-title').textContent='Nova Matrícula';
+  document.getElementById('btn-mat-salvar').textContent='Salvar Matrícula';
+}
+
+/* Abre o formulário de matrícula em modo edição, pré-preenchido com
+   os dados do aluno clicado no card. Cada matrícula corresponde a
+   UMA linha/disciplina (aluno-matéria), então a edição usa seleção
+   única de disciplina, diferente do cadastro novo (multi-seleção). */
+function editarMatricula(id){
+  const m=S.matriculas.find(x=>String(x.id)===String(id));
+  if(!m)return;
+  S.matEditId=id;
+  S.matDiscsSel=m.disciplina?[String(m.disciplina).trim()]:[];
+  S.matFlags={
+    contrato_ok:m.contrato_ok||'',
+    pagamento_ok:m.pagamento_ok||'',
+    liberacao_imagem:m.liberacao_imagem||'',
+    kumon_connect:m.kumon_connect||''
+  };
+  const toInput=s=>{if(!s)return'';const str=String(s).trim();if(/^\d{4}-\d{2}-\d{2}/.test(str))return str.substring(0,10);if(/^\d{2}\/\d{2}\/\d{4}/.test(str)){const[d,mo,y]=str.split('/');return`${y}-${mo}-${d}`;}return'';};
+
+  document.getElementById('m-aluno').value=m.nome_aluno||'';
+  document.getElementById('m-resp').value=m.nome_responsavel||'';
+  document.getElementById('m-data').value=toInput(m.data_matricula);
+  document.getElementById('m-inicio').value=toInput(m.data_inicio);
+  document.getElementById('m-tipo').value=m.tipo||'Nova';
+  document.getElementById('m-origem').value=m.origem||'';
+  document.getElementById('m-partida').value=m.ponto_partida||'';
+  document.getElementById('m-orientador').value=m.orientador||'';
+  document.getElementById('m-obs').value=m.obs||'';
+  document.getElementById('mat-msg').textContent='';
+
+  document.querySelectorAll('#mat-disc-chips .disc-chip').forEach(e=>{
+    e.classList.toggle('selected',S.matDiscsSel.includes(e.textContent.trim()));
+  });
+  document.querySelectorAll('.flag-box .flag-row').forEach(row=>{
+    const lbl=row.querySelector('.flag-lbl').textContent;
+    const campo=lbl.indexOf('Contrato')===0?'contrato_ok':
+                lbl.indexOf('Pagamento')===0?'pagamento_ok':
+                lbl.indexOf('Liberação')===0?'liberacao_imagem':'kumon_connect';
+    row.querySelectorAll('.flag-btn').forEach(b=>{
+      b.classList.remove('on','no');
+      const valor=b.textContent.trim()==='Sim'?'SIM':'NÃO';
+      if(S.matFlags[campo]===valor)b.classList.add(valor==='SIM'?'on':'no');
+    });
+  });
+
+  document.getElementById('nova-mat-title').textContent='Editar Matrícula';
+  document.getElementById('btn-mat-salvar').textContent='Salvar Alterações';
+  showScreen('nova-matricula');
 }
 
 function toggleDiscMat(el,d){
+  if(S.matEditId){
+    /* edição = seleção única, pois a linha representa 1 aluno-matéria */
+    document.querySelectorAll('#mat-disc-chips .disc-chip').forEach(e=>e.classList.remove('selected'));
+    el.classList.add('selected');
+    S.matDiscsSel=[d];
+    return;
+  }
   el.classList.toggle('selected');
   if(S.matDiscsSel.includes(d))S.matDiscsSel=S.matDiscsSel.filter(x=>x!==d);
   else S.matDiscsSel.push(d);
@@ -1636,10 +1694,10 @@ function toggleDiscMat(el,d){
 
 async function salvarMatricula(){
   const msg=document.getElementById('mat-msg');
+  const editando=!!S.matEditId;
   const dados={
     nome_aluno:document.getElementById('m-aluno').value.trim(),
     data_matricula:document.getElementById('m-data').value,
-    disciplinas:S.matDiscsSel.join(', '),
     tipo:document.getElementById('m-tipo').value,
     origem:document.getElementById('m-origem').value,
     orientador:document.getElementById('m-orientador').value.trim(),
@@ -1652,19 +1710,30 @@ async function salvarMatricula(){
     liberacao_imagem:S.matFlags.liberacao_imagem,
     kumon_connect:S.matFlags.kumon_connect
   };
+  if(editando) dados.disciplina=S.matDiscsSel[0]||'';
+  else dados.disciplinas=S.matDiscsSel.join(', ');
+
   if(!dados.nome_aluno){msg.textContent='Informe o nome do aluno.';return;}
   if(!dados.data_matricula){msg.textContent='Informe a data da matrícula.';return;}
-  if(!dados.disciplinas){msg.textContent='Selecione ao menos uma disciplina.';return;}
+  if(editando){
+    if(!dados.disciplina){msg.textContent='Selecione a disciplina.';return;}
+  }else{
+    if(!dados.disciplinas){msg.textContent='Selecione ao menos uma disciplina.';return;}
+  }
 
   const unid=(S.mUnidade==='todas')?S.unidade:S.mUnidade;
   const btn=document.getElementById('btn-mat-salvar');
   btn.disabled=true;msg.style.color='var(--kb-muted)';msg.textContent='Salvando...';
   try{
-    const r=await api({action:'criarMatricula',unidade:unid,
-      dados:JSON.stringify(dados),usuario:S.usuario});
+    const r=editando
+      ? await api({action:'editarMatricula',id:S.matEditId,
+          dados:JSON.stringify(dados),usuario:S.usuario})
+      : await api({action:'criarMatricula',unidade:unid,
+          dados:JSON.stringify(dados),usuario:S.usuario});
     if(r.sucesso){
       msg.style.color='#1a7a3c';msg.textContent=r.mensagem;
       S.metasCarregado=false;
+      S.matEditId=null;
       setTimeout(async()=>{await abrirMetas();renderHub();navTo('metas');},900);
     }else{msg.style.color='#8b1a1a';msg.textContent=r.mensagem||'Erro ao salvar.';}
   }catch(e){msg.style.color='#8b1a1a';msg.textContent='Erro de conexão.';}
